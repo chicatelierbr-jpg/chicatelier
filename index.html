@@ -1,4 +1,448 @@
-const SHEET_NAME = 'Produtos';
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chicatelier · Precificação</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF7F4;
+  --surface: #FFFFFF;
+  --surface2: #F5F0EB;
+  --surface3: #EDE5DC;
+  --border: #E0D5C8;
+  --border-dark: #C8BAA8;
+  --rose: #B5614A;
+  --rose-light: #CC7A62;
+  --rose-dim: rgba(181,97,74,0.1);
+  --rose-deep: #8B3D29;
+  --gold: #C4934A;
+  --gold-dim: rgba(196,147,74,0.12);
+  --sage: #6B9E8A;
+  --cream: #3D2E22;
+  --text: #2A1F16;
+  --text-dim: #7A6555;
+  --text-muted: #A8927E;
+  --shadow: rgba(42,31,22,0.12);
+  --success: #5A9E74;
+  --danger: #B5503A;
+  --google-blue: #4285F4;
+  --google-green: #0F9D58;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.6; }
+header { background: var(--surface); border-bottom: 2px solid var(--border); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; height: 76px; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 20px var(--shadow); }
+.logo-area { display: flex; align-items: center; gap: 16px; cursor: pointer; text-decoration: none; }
+.logo-wrap { height: 52px; width: auto; display: flex; align-items: center; }
+.logo-wrap img { height: 52px; width: auto; object-fit: contain; }
+.logo-text-wrap { line-height: 1.2; }
+.logo-brand { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--text); letter-spacing: 0.04em; }
+.logo-tagline { font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.google-status { display: inline-flex; align-items: center; gap: 7px; font-size: 0.73rem; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface2); color: var(--text-dim); cursor: pointer; transition: all 0.2s; }
+.google-status:hover { border-color: var(--google-green); color: var(--google-green); }
+.google-status.connected { background: rgba(15,157,88,0.08); border-color: rgba(15,157,88,0.3); color: var(--google-green); }
+.google-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); }
+.google-status.connected .google-dot { background: var(--google-green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+nav { display: flex; gap: 2px; }
+.nav-btn { background: none; border: none; color: var(--text-dim); padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 500; transition: all 0.2s; border-bottom: 2px solid transparent; letter-spacing: 0.01em; }
+.nav-btn:hover { color: var(--text); background: var(--surface2); }
+.nav-btn.active { color: var(--rose); font-weight: 600; background: var(--rose-dim); border-bottom-color: var(--rose); }
+.page { display: none; padding: 40px; max-width: 1080px; margin: 0 auto; animation: fadeUp 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.section-eyebrow { font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rose); margin-bottom: 8px; font-weight: 600; }
+.section-title { font-family: 'Playfair Display', serif; font-size: 2.1rem; font-weight: 700; margin-bottom: 8px; line-height: 1.2; color: var(--text); }
+.section-sub { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 36px; max-width: 540px; line-height: 1.6; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 12px var(--shadow); }
+.card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.card-header h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; color: var(--text); }
+.card-icon { width: 34px; height: 34px; border-radius: 9px; background: var(--rose-dim); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; border: 1px solid rgba(181,97,74,0.2); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.span2 { grid-column: span 2; }
+.form-group.span3 { grid-column: span 3; }
+label { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+.hint { font-size: 0.72rem; color: var(--text-muted); font-style: italic; margin-top: 2px; }
+input[type=text], input[type=number], input[type=url], select, textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text); transition: border-color 0.2s, background 0.2s; width: 100%; -webkit-appearance: none; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--rose); background: var(--surface); box-shadow: 0 0 0 3px rgba(181,97,74,0.1); }
+select { cursor: pointer; }
+textarea { resize: vertical; min-height: 80px; }
+input::placeholder { color: var(--text-muted); }
+.pfx { position: relative; }
+.pfx input { padding-left: 36px; }
+.pfx-symbol { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.8rem; font-weight: 600; pointer-events: none; }
+.btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 22px; border: none; border-radius: 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.87rem; transition: all 0.2s; letter-spacing: 0.01em; }
+.btn-primary { background: var(--rose); color: white; }
+.btn-primary:hover { background: var(--rose-deep); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(181,97,74,0.3); }
+.btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--surface3); border-color: var(--rose); }
+.btn-google { background: var(--google-blue); color: white; }
+.btn-google:hover { background: #2b6bd6; transform: translateY(-1px); }
+.btn-google-green { background: var(--google-green); color: white; }
+.btn-google-green:hover { background: #0a7a44; transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: white; }
+.btn-gold:hover { background: #a87730; transform: translateY(-1px); }
+.btn-danger { background: rgba(181,80,58,0.1); color: var(--danger); border: 1px solid rgba(181,80,58,0.25); }
+.btn-danger:hover { background: rgba(181,80,58,0.18); }
+.btn-sm { padding: 7px 14px; font-size: 0.78rem; border-radius: 8px; }
+.sep { height: 1px; background: var(--border); margin: 20px 0; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.stat-tile { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+.stat-tile .val { font-family: 'Playfair Display', serif; font-size: 1.45rem; font-weight: 700; color: var(--rose); }
+.stat-tile .lbl { font-size: 0.67rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 4px; }
+.alert { padding: 12px 16px; border-radius: 10px; font-size: 0.84rem; margin-bottom: 16px; display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; }
+.alert-sage { background: rgba(107,158,138,0.1); border: 1px solid rgba(107,158,138,0.3); color: #3d7060; }
+.alert-gold { background: var(--gold-dim); border: 1px solid rgba(196,147,74,0.25); color: #8B6420; }
+.alert-green { background: rgba(15,157,88,0.08); border: 1px solid rgba(15,157,88,0.25); color: #0a7a44; }
+.alert-danger { background: rgba(181,80,58,0.08); border: 1px solid rgba(181,80,58,0.25); color: var(--danger); }
+.mat-row { display: grid; grid-template-columns: 1fr 120px 70px auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+.result-panel { background: linear-gradient(135deg, #FDF8F4 0%, #F8EFE5 100%); border: 2px solid var(--border); border-radius: 18px; padding: 30px; margin-top: 24px; position: relative; overflow: hidden; }
+.result-panel::before { content: '✦'; position: absolute; top: -30px; right: 20px; font-size: 160px; opacity: 0.04; color: var(--rose); font-family: 'Playfair Display', serif; pointer-events: none; }
+.result-panel h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--rose-deep); margin-bottom: 20px; font-weight: 700; }
+.r-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 0.87rem; }
+.r-row .lbl { color: var(--text-dim); }
+.r-row .val { font-weight: 600; color: var(--text); }
+.r-row.highlight .val { color: var(--gold); }
+.r-total { display: flex; justify-content: space-between; padding: 18px 0 0; margin-top: 8px; align-items: flex-end; }
+.r-total .lbl { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+.r-total .val { font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 700; color: var(--rose); line-height: 1; }
+.margin-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 18px; }
+.mpill { padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); color: var(--text-dim); background: var(--surface2); transition: all 0.18s; }
+.mpill:hover, .mpill.on { background: var(--rose); border-color: var(--rose); color: white; }
+.prog-wrap { margin-top: 14px; }
+.prog-bar { height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--sage), var(--rose)); transition: width 0.4s ease; border-radius: 3px; }
+.prog-label { font-size: 0.76rem; color: var(--text-muted); }
+.prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.prod-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; box-shadow: 0 2px 8px var(--shadow); }
+.prod-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px var(--shadow); border-color: var(--rose); }
+.prod-card-top { background: linear-gradient(135deg, var(--surface2), var(--surface3)); padding: 20px; display: flex; align-items: flex-start; gap: 14px; border-bottom: 1px solid var(--border); }
+.prod-emoji { font-size: 2.2rem; }
+.prod-meta h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; }
+.prod-meta .cat { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+.prod-card-body { padding: 16px 20px 20px; }
+.prod-price { font-family: 'Playfair Display', serif; font-size: 1.85rem; font-weight: 700; color: var(--rose); line-height: 1; }
+.prod-cost { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+.prod-desc { font-size: 0.81rem; color: var(--text-dim); margin-top: 10px; line-height: 1.5; }
+.prod-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.prod-date { font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; }
+.cat-hero { background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%); border: 2px solid var(--border); border-radius: 20px; padding: 52px 48px; margin-bottom: 32px; position: relative; overflow: hidden; text-align: center; box-shadow: 0 4px 24px var(--shadow); }
+.cat-logo-placeholder { font-size: 52px; display: block; margin-bottom: 4px; }
+.cat-title { font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 700; color: var(--text); line-height: 1; }
+.cat-subtitle { color: var(--text-dim); font-size: 0.95rem; margin-top: 10px; font-style: italic; }
+.cat-actions { display: flex; gap: 10px; justify-content: center; margin-top: 22px; flex-wrap: wrap; }
+.cat-divider { text-align: center; margin: 28px 0; color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; display: flex; align-items: center; gap: 12px; }
+.cat-divider::before, .cat-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.cat-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
+.cat-item-img { height: 110px; background: linear-gradient(135deg, var(--surface2), var(--surface3)); display: flex; align-items: center; justify-content: center; font-size: 46px; border-bottom: 1px solid var(--border); }
+.cat-item-body { padding: 16px; }
+.cat-item-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+.cat-item-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 12px; }
+.cat-item-price { font-family: 'Playfair Display', serif; font-size: 1.45rem; font-weight: 700; color: var(--rose); }
+.cat-item-cat { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--text-muted); margin-top: 4px; }
+.google-card { border: 2px dashed rgba(66,133,244,0.3); background: rgba(66,133,244,0.03); border-radius: 16px; padding: 28px; margin-bottom: 20px; }
+.google-card.connected { border-color: rgba(15,157,88,0.3); background: rgba(15,157,88,0.03); }
+.google-features { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin: 16px 0; }
+.g-feat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; }
+.g-feat strong { color: var(--text); display: block; margin-bottom: 3px; font-size: 0.85rem; }
+.sheet-url-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+.sheet-url-row .form-group { flex: 1; min-width: 200px; }
+.empty { text-align: center; padding: 64px 20px; color: var(--text-muted); }
+.empty-icon { font-size: 52px; margin-bottom: 16px; display: block; }
+.empty h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--text-dim); margin-bottom: 8px; }
+#toast { position: fixed; bottom: 32px; right: 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 20px; font-size: 0.88rem; color: var(--text); z-index: 9999; display: none; animation: slideIn 0.3s ease; box-shadow: 0 8px 32px var(--shadow); max-width: 340px; }
+@keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+.loading-overlay { display: none; position: fixed; inset: 0; background: rgba(250,247,244,0.85); z-index: 500; align-items: center; justify-content: center; flex-direction: column; gap: 16px; backdrop-filter: blur(8px); }
+.loading-overlay.show { display: flex; }
+.spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--rose); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 700px) { header { padding: 0 16px; height: 64px; } nav { display: none; } .mobile-nav { display: flex !important; } .page { padding: 20px 16px; } .form-grid { grid-template-columns: 1fr; } .form-group.span2, .form-group.span3 { grid-column: span 1; } .mat-row { grid-template-columns: 1fr 90px 60px auto; } .logo-brand { font-size: 1.1rem; } }
+.mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); z-index: 300; justify-content: space-around; padding: 8px 0 16px; box-shadow: 0 -4px 20px var(--shadow); }
+.mobile-nav-btn { background: none; border: none; color: var(--text-muted); font-size: 0.63rem; font-family: 'DM Sans', sans-serif; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; transition: color 0.2s; }
+.mobile-nav-btn span { font-size: 1.3rem; }
+.mobile-nav-btn.active { color: var(--rose); }
+@media print {
+  header, .mobile-nav, #toast, .btn, .cat-actions, .loading-overlay { display: none !important; }
+  body { background: white; margin: 0; }
+  .page { display: none !important; padding: 20px; }
+  #page-catalogo { display: block !important; }
+  .cat-hero { background: white !important; box-shadow: none !important; border: 1px solid #ddd !important; }
+  .cat-item { break-inside: avoid; border: 1px solid #ddd !important; box-shadow: none !important; }
+  .cat-grid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div style="color:var(--text-dim); font-size:0.85rem; font-family:'DM Sans',sans-serif;" id="loading-msg">Carregando...</div>
+</div>
+
+<header>
+  <div class="logo-area" onclick="showPage('config')">
+    <div class="logo-wrap">
+      <img id="header-logo" src="" alt="Chicatelier" style="display:none;">
+      <span id="header-logo-emoji" style="font-size:2rem;">🪡</span>
+    </div>
+    <div class="logo-text-wrap">
+      <div class="logo-brand" id="header-name">Chicatelier</div>
+      <div class="logo-tagline">Sistema de Precificação</div>
+    </div>
+  </div>
+  <nav>
+    <button class="nav-btn active" onclick="showPage('config')">⚙ Configurações</button>
+    <button class="nav-btn" onclick="showPage('calc')">✦ Calcular</button>
+    <button class="nav-btn" onclick="showPage('produtos')">📦 Produtos</button>
+    <button class="nav-btn" onclick="showPage('catalogo')">📖 Catálogo</button>
+    <button class="nav-btn" onclick="showPage('google')">🔗 Google</button>
+  </nav>
+  <div class="google-status" id="google-status-badge" onclick="showPage('google')">
+    <div class="google-dot"></div>
+    <span id="google-status-text">Conectar Google</span>
+  </div>
+</header>
+
+<div class="mobile-nav">
+  <button class="mobile-nav-btn active" onclick="showPage('config')"><span>⚙</span>Config</button>
+  <button class="mobile-nav-btn" onclick="showPage('calc')"><span>✦</span>Calcular</button>
+  <button class="mobile-nav-btn" onclick="showPage('produtos')"><span>📦</span>Produtos</button>
+  <button class="mobile-nav-btn" onclick="showPage('catalogo')"><span>📖</span>Catálogo</button>
+  <button class="mobile-nav-btn" onclick="showPage('google')"><span>🔗</span>Google</button>
+</div>
+
+<!-- PAGE: CONFIG -->
+<div class="page active" id="page-config">
+  <div class="section-eyebrow">Base do sistema</div>
+  <div class="section-title">Configurações do Atelier</div>
+  <div class="section-sub">Defina seus custos fixos e horas de trabalho. Esses dados alimentam o cálculo automático de todos os produtos.</div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">🎨</div><h3>Identidade do Atelier</h3></div>
+    <div class="form-grid">
+      <div class="form-group span2"><label>Nome do Atelier</label><input type="text" id="atelier_nome" value="Chicatelier" placeholder="Ex: Meu Atelier" oninput="updateNome()"></div>
+      <div class="form-group span2"><label>Slogan</label><input type="text" id="atelier_slogan" value="feito para você" placeholder="Ex: Peças artesanais com amor" oninput="updateNome()"></div>
+      <div class="form-group span2">
+        <label>Logo (URL ou upload)</label>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <input type="url" id="logo_url" placeholder="https://... ou faça upload" oninput="applyLogoUrl()">
+          <label class="btn btn-ghost btn-sm" style="cursor:pointer; flex-shrink:0;">📁 Upload <input type="file" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)"></label>
+        </div>
+      </div>
+    </div>
+    <div id="logo-preview-wrap" style="margin-top:14px; display:none;"><img id="logo-preview-img" style="max-height:80px; max-width:200px; border-radius:8px; border:1px solid var(--border);"></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">🏠</div><h3>Custos Fixos Mensais</h3></div>
+    <div class="alert alert-sage">💡 Use apenas a parte proporcional de cada despesa que pertence ao atelier.</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Aluguel</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="cf_aluguel" value="180" step="0.01" oninput="liveConfig()"></div></div>
+      <div class="form-group"><label>Internet</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="cf_internet" value="50" step="0.01" oninput="liveConfig()"></div></div>
+      <div class="form-group"><label>Água</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="cf_agua" value="67.50" step="0.01" oninput="liveConfig()"></div></div>
+      <div class="form-group"><label>Energia</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="cf_energia" value="125" step="0.01" oninput="liveConfig()"></div></div>
+      <div class="form-group"><label>Manutenção bordado</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="cf_mnt_bord" value="125" step="0.01" oninput="liveConfig()"></div></div>
+      <div class="form-group"><label>Manutenção costura</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="cf_mnt_cos" value="25" step="0.01" oninput="liveConfig()"></div></div>
+      <div class="form-group"><label>Consumíveis</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="cf_consumo" value="33.34" step="0.01" oninput="liveConfig()"></div></div>
+      <div class="form-group"><label>Outros</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="cf_outros" value="0" step="0.01" oninput="liveConfig()"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">⏰</div><h3>Horas de Trabalho Mensais</h3></div>
+    <div class="alert alert-gold">⚠ Suas horas reais calculam o <strong>custo verdadeiro da sua hora</strong>.</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Sábados / mês</label><input type="number" id="h_sab_dias" value="4" min="0" max="5" oninput="liveConfig()"></div>
+      <div class="form-group"><label>Horas por sábado</label><input type="number" id="h_sab_hrs" value="14" min="0" max="24" oninput="liveConfig()"></div>
+      <div class="form-group"><label>Domingos / mês</label><input type="number" id="h_dom_dias" value="4" min="0" max="5" oninput="liveConfig()"></div>
+      <div class="form-group"><label>Horas por domingo</label><input type="number" id="h_dom_hrs" value="14" min="0" max="24" oninput="liveConfig()"></div>
+      <div class="form-group"><label>Noites de semana</label><input type="number" id="h_sem_dias" value="5" min="0" max="7" oninput="liveConfig()"></div>
+      <div class="form-group"><label>Horas por noite</label><input type="number" id="h_sem_hrs" value="3" min="0" max="8" oninput="liveConfig()"></div>
+    </div>
+    <div id="horas-stats" class="stat-grid" style="margin-top:20px;"></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">💰</div><h3>Remuneração e Margem</h3></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Pró-labore mensal</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="cf_prolabore" value="3500" step="50" oninput="liveConfig()"></div></div>
+      <div class="form-group"><label>Margem de lucro padrão (%)</label><input type="number" id="cf_lucro" value="20" min="0" max="300" step="5" oninput="liveConfig()"></div>
+    </div>
+  </div>
+  <div id="config-resumo" class="stat-grid"></div>
+  <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:8px; flex-wrap:wrap;">
+    <button class="btn btn-ghost" onclick="resetConfig()">↺ Redefinir</button>
+    <button class="btn btn-primary" onclick="saveConfig()">💾 Salvar Configurações</button>
+  </div>
+</div>
+
+<!-- PAGE: CALCULAR -->
+<div class="page" id="page-calc">
+  <div class="section-eyebrow">Precificação</div>
+  <div class="section-title" id="calc-titulo">Calcular Produto</div>
+  <div class="section-sub" id="calc-sub">Preencha os campos. O preço é calculado em tempo real.</div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">🏷</div><h3>Identificação</h3></div>
+    <div class="form-grid">
+      <div class="form-group span2"><label>Nome do produto *</label><input type="text" id="p_nome" placeholder="Ex: Toalha bordada com monograma" oninput="calcPreco()"></div>
+      <div class="form-group"><label>Categoria</label>
+        <select id="p_cat" oninput="calcPreco()">
+          <option>Bordado</option><option>Costura</option><option>Bordado + Costura</option>
+          <option>Acessório</option><option>Enxoval</option><option>Decoração</option>
+          <option>Personalizado</option><option>Outro</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Ícone</label>
+        <select id="p_emoji" oninput="calcPreco()">
+          <option>🧵</option><option>🌸</option><option>🎀</option><option>👜</option>
+          <option>🧣</option><option>🪡</option><option>✨</option><option>🎁</option>
+          <option>🌿</option><option>💐</option><option>🦋</option><option>🌹</option>
+        </select>
+      </div>
+      <div class="form-group span3"><label>Descrição para o catálogo</label><textarea id="p_desc" placeholder="Técnica, materiais, tamanho..."></textarea></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">⏱</div><h3>Tempo de Execução</h3></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Bordado (min)</label><input type="number" id="p_min_bord" value="0" min="0" step="5" oninput="calcPreco()"></div>
+      <div class="form-group"><label>Complexidade bordado</label>
+        <select id="p_complexidade" oninput="calcPreco()">
+          <option value="1">Simples</option><option value="1.2">Médio</option>
+          <option value="1.5">Complexo</option><option value="1.8">Premium</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Costura (min)</label><input type="number" id="p_min_cos" value="0" min="0" step="5" oninput="calcPreco()"></div>
+      <div class="form-group"><label>Acabamento (min)</label><input type="number" id="p_min_acab" value="0" min="0" step="5" oninput="calcPreco()"></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-label">Complexidade: <span id="prog-label-text">—</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">🧶</div><h3>Materiais Diretos</h3></div>
+    <div id="mats-list"></div>
+    <button class="btn btn-ghost btn-sm" onclick="addMat()" style="margin-top:8px;">+ Adicionar material</button>
+    <div class="sep"></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Linhas de bordar (cones)</label><input type="number" id="p_linhas" value="1" min="0" step="0.5" oninput="calcPreco()"></div>
+      <div class="form-group"><label>Valor por cone (R$)</label><input type="number" id="p_linha_val" value="18" min="0" step="0.5" oninput="calcPreco()"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon">📦</div><h3>Embalagem & Extras</h3></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Embalagem (R$)</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="p_embal" value="0" step="0.01" oninput="calcPreco()"></div></div>
+      <div class="form-group"><label>Etiqueta (R$)</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="p_etiqu" value="0" step="0.01" oninput="calcPreco()"></div></div>
+      <div class="form-group"><label>Tag (R$)</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="p_tag" value="0" step="0.01" oninput="calcPreco()"></div></div>
+      <div class="form-group"><label>Outros embal. (R$)</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="p_embal2" value="0" step="0.01" oninput="calcPreco()"></div></div>
+      <div class="form-group"><label>Frete de materiais (R$)</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="p_frete" value="0" step="0.01" oninput="calcPreco()"></div></div>
+      <div class="form-group"><label>Taxa marketplace (%)</label><input type="number" id="p_mkt_taxa" value="0" min="0" max="50" step="0.5" oninput="calcPreco()"></div>
+      <div class="form-group"><label>Desconto (%)</label><input type="number" id="p_desconto" value="0" min="0" max="100" step="1" oninput="calcPreco()"></div>
+      <div class="form-group"><label>Unidades no lote</label><input type="number" id="p_unid" value="1" min="1" oninput="calcPreco()"></div>
+    </div>
+  </div>
+  <div class="result-panel">
+    <h3>✦ Resumo de Custos</h3>
+    <div id="result-rows"></div>
+    <div class="sep" style="background:var(--border); margin:14px 0;"></div>
+    <div class="r-total">
+      <div>
+        <div class="lbl">Preço sugerido</div>
+        <div style="font-size:0.72rem; color:var(--text-muted); margin-top:4px;">margem <span id="margem-label">20</span>%</div>
+      </div>
+      <div class="val" id="preco-final">R$ —</div>
+    </div>
+    <div style="margin-top:16px;">
+      <div style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px;">Simular margem de lucro:</div>
+      <div class="margin-pills">
+        <button class="mpill" onclick="setMargem(0)">Sem margem</button>
+        <button class="mpill" onclick="setMargem(10)">+10%</button>
+        <button class="mpill on" onclick="setMargem(20)">+20%</button>
+        <button class="mpill" onclick="setMargem(30)">+30%</button>
+        <button class="mpill" onclick="setMargem(50)">+50%</button>
+        <button class="mpill" onclick="setMargem(100)">+100%</button>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px; flex-wrap:wrap;">
+    <button class="btn btn-ghost" onclick="limpar()">↺ Limpar</button>
+    <button class="btn btn-google-green" onclick="salvarNoSheets()">
+      <span id="btn-salvar-label">📊 Salvar no Google Sheets</span>
+    </button>
+  </div>
+</div>
+
+<!-- PAGE: PRODUTOS -->
+<div class="page" id="page-produtos">
+  <div class="section-eyebrow">Biblioteca</div>
+  <div class="section-title">Meus Produtos</div>
+  <div class="section-sub">Produtos salvos no Google Sheets. Conecte o Sheets na aba "Google" para ver seus produtos aqui.</div>
+  <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+    <button class="btn btn-google-green" onclick="carregarProdutos()">🔄 Atualizar lista</button>
+  </div>
+  <div id="prod-grid" class="prod-grid"></div>
+</div>
+
+<!-- PAGE: CATALOGO -->
+<div class="page" id="page-catalogo">
+  <div class="cat-hero">
+    <div class="cat-logo-area" id="cat-logo-area">
+      <span class="cat-logo-placeholder" id="cat-logo-emoji">🪡</span>
+    </div>
+    <div class="cat-title" id="cat-title">Chicatelier</div>
+    <div class="cat-subtitle" id="cat-sub"><em>feito para você</em></div>
+    <div class="cat-actions">
+      <button class="btn btn-primary btn-sm" onclick="imprimirCatalogo()">🖨 Imprimir / PDF</button>
+      <button class="btn btn-ghost btn-sm" onclick="shareCatalog()">🔗 Compartilhar link</button>
+    </div>
+  </div>
+  <div id="cat-filtros" style="display:none; margin-bottom:20px;">
+    <div style="font-size:0.72rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; font-weight:600;">Filtrar por categoria</div>
+    <div id="cat-filtros-pills" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+  </div>
+  <div class="cat-divider">✦ coleção ✦</div>
+  <div id="cat-grid" class="cat-grid"></div>
+</div>
+
+<!-- PAGE: GOOGLE -->
+<div class="page" id="page-google">
+  <div class="section-eyebrow">Integração</div>
+  <div class="section-title">Google Sheets</div>
+  <div class="section-sub">O Google Sheets é o banco de dados do sistema. Todos os produtos são salvos e lidos diretamente da planilha.</div>
+
+  <div class="google-card" id="google-card-status">
+    <div class="card-header" style="border:none; margin-bottom:12px; padding-bottom:0;">
+      <div class="card-icon" style="background:rgba(66,133,244,0.1); border-color:rgba(66,133,244,0.2);">🔗</div>
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.1rem;">Status da Conexão</h3>
+      <span id="google-status-chip" style="margin-left:auto; font-size:0.75rem; padding:4px 12px; border-radius:20px; background:var(--surface3); color:var(--text-muted); font-weight:600;">Não configurado</span>
+    </div>
+    <div class="google-features">
+      <div class="g-feat"><strong>📊 Banco de dados</strong>Seus produtos ficam salvos na planilha e podem ser acessados de qualquer dispositivo.</div>
+      <div class="g-feat"><strong>📱 Acesso em qualquer lugar</strong>Abra o sistema no celular, tablet ou computador e veja todos os produtos.</div>
+      <div class="g-feat"><strong>🔄 Sincronização real</strong>Salva e lê diretamente do Sheets — sem storage local.</div>
+      <div class="g-feat"><strong>📈 Histórico completo</strong>Acompanhe todos os produtos com datas e preços.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:rgba(66,133,244,0.1); border-color:rgba(66,133,244,0.2); color:var(--google-blue);">1</div>
+      <h3>Criar a Planilha</h3>
+    </div>
+    <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:16px;">Crie uma planilha nova no Google Sheets e nomeie como <strong>"Chicatelier Precificação"</strong>.</p>
+    <a href="https://sheets.google.com/create" target="_blank" class="btn btn-google">📊 Abrir Google Sheets</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:rgba(66,133,244,0.1); border-color:rgba(66,133,244,0.2); color:var(--google-blue);">2</div>
+      <h3>Instalar o Apps Script</h3>
+    </div>
+    <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:12px;">Na planilha, vá em <strong>Extensões → Apps Script</strong>. Apague o código existente, cole o código abaixo, salve (Ctrl+S) e clique em <strong>Implantar → Nova implantação → App da Web → Qualquer pessoa → Implantar</strong>.</p>
+    <div style="background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:16px; font-family:monospace; font-size:0.78rem; color:var(--text-dim); overflow-x:auto; white-space:pre; margin-bottom:14px; max-height:300px; overflow-y:auto; line-height:1.6;" id="script-code">const SHEET_NAME = 'Produtos';
 
 function doPost(e) {
   try {
@@ -77,4 +521,654 @@ function doGet(e) {
       .createTextOutput(JSON.stringify({success: false, error: err.toString()}))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}</div>
+    <button class="btn btn-ghost btn-sm" onclick="copiarScript()">📋 Copiar código</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:rgba(15,157,88,0.1); border-color:rgba(15,157,88,0.2); color:var(--google-green);">3</div>
+      <h3>Conectar ao Sistema</h3>
+    </div>
+    <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:14px;">Cole a URL da implantação (começa com <code>https://script.google.com/macros/s/...</code>) e clique em Conectar.</p>
+    <div class="sheet-url-row">
+      <div class="form-group">
+        <label>URL do Apps Script</label>
+        <input type="url" id="sheets_url" placeholder="https://script.google.com/macros/s/...">
+      </div>
+      <button class="btn btn-google-green" onclick="conectarSheets()">🔗 Conectar</button>
+    </div>
+    <div id="conn-feedback" style="margin-top:12px; font-size:0.83rem; display:none;"></div>
+  </div>
+
+  <div class="card" id="card-sync" style="display:none;">
+    <div class="card-header">
+      <div class="card-icon" style="background:rgba(15,157,88,0.1); border-color:rgba(15,157,88,0.2);">✅</div>
+      <h3>Conectado com Sucesso</h3>
+    </div>
+    <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:16px;">Seu sistema está conectado ao Google Sheets. Vá em <strong>Calcular</strong> para adicionar produtos ou em <strong>Produtos</strong> para ver os salvos.</p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn btn-google-green" onclick="carregarProdutos(); showPage('produtos')">📦 Ver Meus Produtos</button>
+      <button class="btn btn-ghost" onclick="desconectarSheets()">🔌 Desconectar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════
+//  STORAGE LOCAL (só config e URL)
+// ═══════════════════════════════
+const LS = {
+  get: (k, def=null) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch { return def; } },
+  set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } },
+  del: (k) => { try { localStorage.removeItem(k); return true; } catch { return false; } }
+};
+
+const KEYS = { config: 'chic_config_v3', sheetsUrl: 'chic_sheets_url_v2', logo: 'chic_logo_v3' };
+
+let sheetsUrl = null;
+let mats = [];
+let margemAtual = 20;
+let logoDataUrl = null;
+let editandoId = null; // null = novo produto, número = editando
+
+function showLoading(v, msg='Carregando...') {
+  document.getElementById('loading').classList.toggle('show', v);
+  document.getElementById('loading-msg').textContent = msg;
 }
+
+function toast(msg, ok=true) {
+  const el = document.getElementById('toast');
+  el.innerHTML = (ok ? '✅ ' : '⚠️ ') + msg;
+  el.style.display = 'block';
+  el.style.borderColor = ok ? 'rgba(107,158,138,0.5)' : 'rgba(196,147,74,0.5)';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ═══════════════════════════════
+//  NAV
+// ═══════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn, .mobile-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-btn, .mobile-nav-btn').forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) b.classList.add('active');
+  });
+  if (id === 'produtos') carregarProdutos();
+  if (id === 'catalogo') renderCatalogo();
+  if (id === 'google') refreshGooglePage();
+}
+
+// ═══════════════════════════════
+//  LOGO
+// ═══════════════════════════════
+function handleLogoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    logoDataUrl = e.target.result;
+    applyLogo(logoDataUrl);
+    LS.set(KEYS.logo, logoDataUrl);
+    toast('Logo salva!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function applyLogoUrl() {
+  const url = document.getElementById('logo_url').value.trim();
+  if (url) { logoDataUrl = url; applyLogo(url); }
+}
+
+function applyLogo(src) {
+  if (!src) return;
+  logoDataUrl = src;
+  const hImg = document.getElementById('header-logo');
+  const hEmoji = document.getElementById('header-logo-emoji');
+  hImg.src = src; hImg.style.display = 'block'; hEmoji.style.display = 'none';
+  const prevWrap = document.getElementById('logo-preview-wrap');
+  const prevImg = document.getElementById('logo-preview-img');
+  prevImg.src = src; prevWrap.style.display = 'block';
+}
+
+function updateNome() {
+  const nome = document.getElementById('atelier_nome').value || 'Chicatelier';
+  const slogan = document.getElementById('atelier_slogan').value || 'feito para você';
+  document.getElementById('header-name').textContent = nome;
+  document.getElementById('cat-title').textContent = nome;
+  document.getElementById('cat-sub').innerHTML = `<em>${slogan}</em>`;
+}
+
+// ═══════════════════════════════
+//  CONFIG
+// ═══════════════════════════════
+function gv(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+function getConfig() {
+  return {
+    aluguel: +gv('cf_aluguel'), internet: +gv('cf_internet'), agua: +gv('cf_agua'), energia: +gv('cf_energia'),
+    mnt_bord: +gv('cf_mnt_bord'), mnt_cos: +gv('cf_mnt_cos'), consumo: +gv('cf_consumo'), outros: +gv('cf_outros'),
+    prolabore: +gv('cf_prolabore'), lucro: +gv('cf_lucro'),
+    h_sab_dias: +gv('h_sab_dias'), h_sab_hrs: +gv('h_sab_hrs'),
+    h_dom_dias: +gv('h_dom_dias'), h_dom_hrs: +gv('h_dom_hrs'),
+    h_sem_dias: +gv('h_sem_dias'), h_sem_hrs: +gv('h_sem_hrs'),
+    nome: gv('atelier_nome'), slogan: gv('atelier_slogan'),
+  };
+}
+function fixoMensal(c) { return c.aluguel + c.internet + c.agua + c.energia + c.mnt_bord + c.mnt_cos + c.consumo + c.outros; }
+function horasMensais(c) { return (c.h_sab_dias * c.h_sab_hrs) + (c.h_dom_dias * c.h_dom_hrs) + (c.h_sem_dias * 4.33 * c.h_sem_hrs); }
+function custoHora(c) { const h = horasMensais(c); return h > 0 ? (fixoMensal(c) + c.prolabore) / h : 0; }
+
+function liveConfig() {
+  const c = getConfig();
+  const fixo = fixoMensal(c);
+  const horas = horasMensais(c);
+  const ch = custoHora(c);
+  document.getElementById('horas-stats').innerHTML = `
+    <div class="stat-tile"><div class="val">${horas.toFixed(0)}h</div><div class="lbl">Horas/mês</div></div>
+    <div class="stat-tile"><div class="val">R$${fixo.toFixed(0)}</div><div class="lbl">Fixo mensal</div></div>
+    <div class="stat-tile"><div class="val">R$${ch.toFixed(2)}</div><div class="lbl">Custo/hora</div></div>`;
+  document.getElementById('config-resumo').innerHTML = `
+    <div class="stat-tile"><div class="val">R$${(fixo+c.prolabore).toFixed(0)}</div><div class="lbl">Total mensal</div></div>
+    <div class="stat-tile"><div class="val">R$${ch.toFixed(2)}</div><div class="lbl">Hora real</div></div>
+    <div class="stat-tile"><div class="val">${c.lucro}%</div><div class="lbl">Margem padrão</div></div>`;
+  updateNome();
+}
+
+function saveConfig() {
+  const c = getConfig();
+  LS.set(KEYS.config, c);
+  if (logoDataUrl) LS.set(KEYS.logo, logoDataUrl);
+  toast('Configurações salvas!');
+}
+
+function loadConfig() {
+  const c = LS.get(KEYS.config);
+  if (!c) { liveConfig(); return; }
+  const set = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined) el.value = v; };
+  set('cf_aluguel', c.aluguel); set('cf_internet', c.internet); set('cf_agua', c.agua); set('cf_energia', c.energia);
+  set('cf_mnt_bord', c.mnt_bord); set('cf_mnt_cos', c.mnt_cos); set('cf_consumo', c.consumo); set('cf_outros', c.outros);
+  set('cf_prolabore', c.prolabore); set('cf_lucro', c.lucro);
+  set('h_sab_dias', c.h_sab_dias); set('h_sab_hrs', c.h_sab_hrs);
+  set('h_dom_dias', c.h_dom_dias); set('h_dom_hrs', c.h_dom_hrs);
+  set('h_sem_dias', c.h_sem_dias); set('h_sem_hrs', c.h_sem_hrs);
+  if (c.nome) set('atelier_nome', c.nome);
+  if (c.slogan) set('atelier_slogan', c.slogan);
+  margemAtual = c.lucro || 20;
+  liveConfig();
+}
+
+function resetConfig() { if (confirm('Redefinir configurações?')) { LS.del(KEYS.config); location.reload(); } }
+
+// ═══════════════════════════════
+//  MATERIAIS
+// ═══════════════════════════════
+function addMat(nome='', qtd=1, un='un', val=0) {
+  mats.push({ id: Date.now() + Math.random(), nome, qtd, un, val });
+  renderMats();
+}
+
+function renderMats() {
+  const el = document.getElementById('mats-list');
+  if (!mats.length) { el.innerHTML = '<div style="color:var(--text-muted);font-size:0.83rem;margin-bottom:8px;">Nenhum material adicionado.</div>'; calcPreco(); return; }
+  el.innerHTML = mats.map(m => `
+    <div class="mat-row">
+      <input type="text" value="${m.nome}" placeholder="Material" oninput="updateMat('${m.id}','nome',this.value)">
+      <input type="number" value="${m.val}" min="0" step="0.01" placeholder="R$" oninput="updateMat('${m.id}','val',+this.value)">
+      <input type="number" value="${m.qtd}" min="0.1" step="0.1" placeholder="Qtd" oninput="updateMat('${m.id}','qtd',+this.value)">
+      <button class="btn btn-danger btn-sm" onclick="removeMat('${m.id}')">✕</button>
+    </div>`).join('');
+  calcPreco();
+}
+
+function updateMat(id, key, val) { const m = mats.find(m => String(m.id) === String(id)); if (m) { m[key] = val; calcPreco(); } }
+function removeMat(id) { mats = mats.filter(m => String(m.id) !== String(id)); renderMats(); }
+
+// ═══════════════════════════════
+//  CÁLCULO
+// ═══════════════════════════════
+function setMargem(v) {
+  margemAtual = v;
+  document.querySelectorAll('.mpill').forEach(p => p.classList.remove('on'));
+  const pills = [0,10,20,30,50,100];
+  const idx = pills.indexOf(v);
+  if (idx >= 0) document.querySelectorAll('.mpill')[idx].classList.add('on');
+  document.getElementById('margem-label').textContent = v;
+  calcPreco();
+}
+
+function calcPreco() {
+  const c = getConfig();
+  const ch = custoHora(c);
+  const minBord = (+gv('p_min_bord') || 0) * (+gv('p_complexidade') || 1);
+  const minCos = +gv('p_min_cos') || 0;
+  const minAcab = +gv('p_min_acab') || 0;
+  const totalMin = minBord + minCos + minAcab;
+  const totalH = totalMin / 60;
+  const mo = totalH * ch;
+  const matCusto = mats.reduce((s, m) => s + (m.val * m.qtd), 0);
+  const linhas = (+gv('p_linhas') || 0) * (+gv('p_linha_val') || 0) / 100;
+  const embal = (+gv('p_embal') || 0) + (+gv('p_etiqu') || 0) + (+gv('p_tag') || 0) + (+gv('p_embal2') || 0);
+  const frete = +gv('p_frete') || 0;
+  const unid = Math.max(1, +gv('p_unid') || 1);
+  const custoTotal = mo + matCusto + linhas + embal + frete;
+  const custoUnit = custoTotal / unid;
+  const lucro = custoUnit * (margemAtual / 100);
+  const mktTaxa = +gv('p_mkt_taxa') || 0;
+  const descontoPct = +gv('p_desconto') || 0;
+  const sub = custoUnit + lucro;
+  const mktVal = sub * (mktTaxa / 100);
+  const precoAntes = sub + mktVal;
+  const descVal = precoAntes * (descontoPct / 100);
+  const final = precoAntes - descVal;
+
+  const pct = Math.min(100, (totalMin / 180) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label-text').textContent = totalMin > 0 ? `${totalMin} min (${totalH.toFixed(1)}h)` : '—';
+
+  const rows = [
+    { l: '👩‍🎨 Mão de obra', v: mo, hint: `${totalH.toFixed(2)}h × R$${ch.toFixed(2)}/h` },
+    { l: '🧶 Materiais diretos', v: matCusto },
+    { l: '🪡 Linhas de bordar', v: linhas },
+    { l: '📦 Embalagem', v: embal },
+    { l: '🚚 Frete de materiais', v: frete },
+    { l: '─ Custo unitário', v: custoUnit, sep: true },
+    { l: `📈 Margem de lucro (${margemAtual}%)`, v: lucro, hl: true },
+    ...(mktTaxa > 0 ? [{ l: `🛒 Taxa marketplace (${mktTaxa}%)`, v: mktVal }] : []),
+    ...(descontoPct > 0 ? [{ l: `🏷 Desconto (${descontoPct}%)`, v: -descVal }] : []),
+  ];
+
+  document.getElementById('result-rows').innerHTML = rows.map(r => `
+    <div class="r-row${r.hl?' highlight':''}">
+      <span class="lbl">${r.l} ${r.hint?`<span style="opacity:0.45;font-size:0.75rem;">${r.hint}</span>`:''}</span>
+      <span class="val" style="${r.sep?'border-top:1px solid var(--border);padding-top:4px;':''}">${r.v<0?'- ':''}R$ ${Math.abs(r.v).toFixed(2)}</span>
+    </div>`).join('');
+  document.getElementById('preco-final').textContent = `R$ ${final.toFixed(2)}`;
+  return { mo, matCusto, linhas, embal, embalagem: embal, frete, custoUnit, lucro, mktVal, descVal, final, totalMin, ch };
+}
+
+function buildProd(calc) {
+  if (!calc) calc = calcPreco();
+  return {
+    id: editandoId || Date.now(), // preserva ID ao editar
+    nome: gv('p_nome').trim(), cat: gv('p_cat'), emoji: gv('p_emoji'), desc: gv('p_desc'),
+    min_bord: gv('p_min_bord'), min_cos: gv('p_min_cos'), min_acab: gv('p_min_acab'),
+    complexidade: gv('p_complexidade'), linhas: gv('p_linhas'), linha_val: gv('p_linha_val'),
+    embal: gv('p_embal'), etiqu: gv('p_etiqu'), tag: gv('p_tag'), embal2: gv('p_embal2'),
+    frete: gv('p_frete'), mkt_taxa: gv('p_mkt_taxa'), desconto: gv('p_desconto'), unid: gv('p_unid'),
+    mats: JSON.parse(JSON.stringify(mats)),
+    custo: calc.custoUnit, preco: calc.final, margem: margemAtual,
+    matCusto: calc.matCusto, embalagem: calc.embalagem,
+    data: new Date().toLocaleDateString('pt-BR'), dataSalvo: new Date().toISOString(),
+  };
+}
+
+function limpar() {
+  editandoId = null;
+  document.getElementById('calc-titulo').textContent = 'Calcular Produto';
+  document.getElementById('calc-sub').textContent = 'Preencha os campos. O preço é calculado em tempo real.';
+  document.getElementById('btn-salvar-label').textContent = '📊 Salvar no Google Sheets';
+  ['p_nome','p_desc'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  ['p_min_bord','p_min_cos','p_min_acab','p_embal','p_etiqu','p_tag','p_embal2','p_frete','p_mkt_taxa','p_desconto'].forEach(id => { const el = document.getElementById(id); if(el) el.value='0'; });
+  document.getElementById('p_linhas').value = '1';
+  document.getElementById('p_linha_val').value = '18';
+  document.getElementById('p_unid').value = '1';
+  mats = []; renderMats(); setMargem(20); calcPreco();
+}
+
+// ═══════════════════════════════
+//  GOOGLE SHEETS — BANCO DE DADOS
+// ═══════════════════════════════
+async function enviarParaSheets(prod) {
+  if (!sheetsUrl) return { ok: false, msg: 'URL não configurada' };
+  try {
+    // Use no-cors to avoid CORS errors — Apps Script accepts this
+    await fetch(sheetsUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(prod)
+    });
+    // With no-cors we can't read the response, but if fetch didn't throw, it reached the server
+    return { ok: true, msg: '' };
+  } catch(e) {
+    return { ok: false, msg: e.message };
+  }
+}
+
+async function buscarProdutosSheets() {
+  if (!sheetsUrl) return null;
+  try {
+    // Use JSONP-style via script tag to bypass CORS on GET
+    return await new Promise((resolve) => {
+      const callbackName = 'cb_' + Date.now();
+      const url = sheetsUrl + '?callback=' + callbackName;
+      const timeout = setTimeout(() => {
+        delete window[callbackName];
+        // Fallback: try regular fetch (works if CORS headers are set)
+        fetch(sheetsUrl)
+          .then(r => r.json())
+          .then(json => resolve(json.success ? json.produtos : null))
+          .catch(() => resolve(null));
+      }, 3000);
+      window[callbackName] = (data) => {
+        clearTimeout(timeout);
+        delete window[callbackName];
+        resolve(data && data.success ? data.produtos : null);
+      };
+      const script = document.createElement('script');
+      script.src = url;
+      script.onerror = () => {
+        clearTimeout(timeout);
+        delete window[callbackName];
+        // Fallback to regular fetch
+        fetch(sheetsUrl)
+          .then(r => r.json())
+          .then(json => resolve(json.success ? json.produtos : null))
+          .catch(() => resolve(null));
+      };
+      document.head.appendChild(script);
+      setTimeout(() => { try { document.head.removeChild(script); } catch {} }, 5000);
+    });
+  } catch(e) {
+    return null;
+  }
+}
+
+async function salvarNoSheets() {
+  const nome = gv('p_nome').trim();
+  if (!nome) { toast('Preencha o nome do produto', false); return; }
+  if (!sheetsUrl) { toast('Configure o Google Sheets primeiro (aba Google)', false); showPage('google'); return; }
+  const calc = calcPreco();
+  const prod = buildProd(calc);
+  const isEdit = !!editandoId;
+  showLoading(true, isEdit ? 'Atualizando produto...' : 'Salvando no Google Sheets...');
+  const result = await enviarParaSheets(prod);
+  showLoading(false);
+  if (result.ok) {
+    toast(isEdit ? `"${nome}" atualizado! ✓` : `"${nome}" salvo no Google Sheets! ✓`);
+    editandoId = null;
+    if (confirm(isEdit ? 'Produto atualizado! Ir para "Meus Produtos"?' : 'Produto salvo! Ir para "Meus Produtos"?')) {
+      limpar();
+      showPage('produtos');
+    } else {
+      limpar();
+    }
+  } else {
+    toast('Erro ao salvar. Verifique a URL do Apps Script e as permissões.', false);
+  }
+}
+
+function editarProd(p) {
+  editandoId = p.id;
+  // Update page header
+  document.getElementById('calc-titulo').textContent = 'Editar Produto';
+  document.getElementById('calc-sub').textContent = `Editando: ${p.nome} — faça as alterações e salve.`;
+  document.getElementById('btn-salvar-label').textContent = '💾 Atualizar no Sheets';
+  // Fill fields
+  const setV = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined && val !== null) el.value = val; };
+  setV('p_nome', p.nome); setV('p_desc', p.desc); setV('p_cat', p.cat); setV('p_emoji', p.emoji);
+  setV('p_min_bord', p.min_bord); setV('p_min_cos', p.min_cos); setV('p_min_acab', p.min_acab);
+  setV('p_complexidade', p.complexidade || '1');
+  setV('p_linhas', p.linhas); setV('p_linha_val', p.linha_val);
+  setV('p_embal', p.embal || 0); setV('p_etiqu', p.etiqu || 0); setV('p_tag', p.tag || 0); setV('p_embal2', p.embal2 || 0);
+  setV('p_frete', p.frete); setV('p_mkt_taxa', p.mkt_taxa); setV('p_desconto', p.desconto); setV('p_unid', p.unid);
+  mats = Array.isArray(p.mats) ? p.mats.map(m => ({...m, id: Date.now()+Math.random()})) : [];
+  renderMats();
+  setMargem(+p.margem || 20);
+  calcPreco();
+  showPage('calc');
+  window.scrollTo(0, 0);
+}
+
+async function deletarProdSheets(id, nome) {
+  if (!confirm(`Remover "${nome}"?`)) return;
+  if (!sheetsUrl) { toast('Conecte o Google Sheets primeiro', false); return; }
+  showLoading(true, 'Removendo...');
+  // Send a special delete payload
+  await enviarParaSheets({ __delete: true, id: id });
+  showLoading(false);
+  toast(`"${nome}" removido!`);
+  setTimeout(() => carregarProdutos(), 1500);
+}
+
+// ═══════════════════════════════
+//  PRODUTOS
+// ═══════════════════════════════
+async function carregarProdutos() {
+  const el = document.getElementById('prod-grid');
+  if (!sheetsUrl) {
+    el.innerHTML = `<div class="empty" style="grid-column:1/-1;">
+      <span class="empty-icon">🔗</span>
+      <h3>Google Sheets não conectado</h3>
+      <p>Configure o Google Sheets na aba "Google" para ver seus produtos aqui.</p>
+      <button class="btn btn-google-green" style="margin-top:16px;" onclick="showPage('google')">Configurar agora</button>
+    </div>`;
+    return;
+  }
+  showLoading(true, 'Carregando produtos do Sheets...');
+  const produtos = await buscarProdutosSheets();
+  showLoading(false);
+  if (!produtos) {
+    el.innerHTML = `<div class="empty" style="grid-column:1/-1;">
+      <span class="empty-icon">⚠️</span>
+      <h3>Erro ao carregar produtos</h3>
+      <p>Verifique se a URL do Apps Script está correta e se as permissões estão como "Qualquer pessoa".</p>
+    </div>`;
+    return;
+  }
+  if (!produtos.length) {
+    el.innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-icon">🧵</span><h3>Nenhum produto salvo ainda</h3><p>Calcule e salve um produto na aba "Calcular".</p></div>`;
+    return;
+  }
+  el.innerHTML = produtos.map(p => `
+    <div class="prod-card">
+      <div class="prod-card-top">
+        <div class="prod-emoji">${p.emoji || '🧵'}</div>
+        <div class="prod-meta">
+          <h3>${p.nome}</h3>
+          <div class="cat">${p.cat} · lote ${p.unid||1}</div>
+        </div>
+      </div>
+      <div class="prod-card-body">
+        <div class="prod-price">R$ ${parseFloat(p.preco||0).toFixed(2)}</div>
+        <div class="prod-cost">Custo: R$${parseFloat(p.custo||0).toFixed(2)} · Margem: ${p.margem}%</div>
+        ${p.desc ? `<div class="prod-desc">${String(p.desc).slice(0,90)}${String(p.desc).length>90?'...':''}</div>` : ''}
+        <div class="prod-date">📅 ${p.data} · 📊 Sheets</div>
+        <div class="prod-actions">
+          <button class="btn btn-ghost btn-sm" onclick='editarProd(${JSON.stringify(p).replace(/'/g,"&#39;")})'>✏ Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deletarProdSheets(${p.id},'${String(p.nome).replace(/'/g,"\\'")}')">🗑</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════
+//  CATÁLOGO
+// ═══════════════════════════════
+let todosProdutosCatalogo = [];
+let categoriaAtiva = 'Todas';
+
+async function renderCatalogo() {
+  updateNome();
+  if (logoDataUrl) applyLogo(logoDataUrl);
+  const el = document.getElementById('cat-grid');
+  if (!sheetsUrl) {
+    el.innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-icon">🔗</span><h3>Conecte o Google Sheets</h3><p>Configure na aba "Google" para ver o catálogo.</p></div>`;
+    document.getElementById('cat-filtros').style.display = 'none';
+    return;
+  }
+  showLoading(true, 'Carregando catálogo...');
+  const produtos = await buscarProdutosSheets();
+  showLoading(false);
+  if (!produtos || !produtos.length) {
+    el.innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-icon">📖</span><h3>Catálogo vazio</h3><p>Salve produtos para montar o catálogo.</p></div>`;
+    document.getElementById('cat-filtros').style.display = 'none';
+    return;
+  }
+  todosProdutosCatalogo = produtos;
+  // Build category filters
+  const cats = ['Todas', ...new Set(produtos.map(p => p.cat).filter(Boolean))];
+  const pillsEl = document.getElementById('cat-filtros-pills');
+  pillsEl.innerHTML = cats.map(c => `
+    <button onclick="filtrarCatalogo('${c}')" id="cat-pill-${c.replace(/\s+/g,'_')}"
+      style="padding:6px 16px; border-radius:20px; font-size:0.8rem; font-weight:600; cursor:pointer; border:1.5px solid var(--border); background:${c===categoriaAtiva?'var(--rose)':'var(--surface2)'}; color:${c===categoriaAtiva?'white':'var(--text-dim)'}; transition:all 0.18s; font-family:'DM Sans',sans-serif;">
+      ${c}
+    </button>`).join('');
+  document.getElementById('cat-filtros').style.display = cats.length > 2 ? 'block' : 'none';
+  renderGridCatalogo();
+}
+
+function filtrarCatalogo(cat) {
+  categoriaAtiva = cat;
+  // Update pill styles
+  document.querySelectorAll('[id^="cat-pill-"]').forEach(btn => {
+    const isActive = btn.textContent.trim() === cat;
+    btn.style.background = isActive ? 'var(--rose)' : 'var(--surface2)';
+    btn.style.color = isActive ? 'white' : 'var(--text-dim)';
+    btn.style.borderColor = isActive ? 'var(--rose)' : 'var(--border)';
+  });
+  renderGridCatalogo();
+}
+
+function renderGridCatalogo() {
+  const el = document.getElementById('cat-grid');
+  const filtrados = categoriaAtiva === 'Todas'
+    ? todosProdutosCatalogo
+    : todosProdutosCatalogo.filter(p => p.cat === categoriaAtiva);
+  if (!filtrados.length) {
+    el.innerHTML = `<div class="empty" style="grid-column:1/-1;"><span class="empty-icon">🔍</span><h3>Nenhum produto nesta categoria</h3></div>`;
+    return;
+  }
+  el.innerHTML = filtrados.map(p => `
+    <div class="cat-item">
+      <div class="cat-item-img">${p.emoji || '🧵'}</div>
+      <div class="cat-item-body">
+        <div class="cat-item-name">${p.nome}</div>
+        ${p.desc ? `<div class="cat-item-desc">${String(p.desc).slice(0,100)}${String(p.desc).length>100?'...':''}</div>` : ''}
+        <div class="cat-item-price">R$ ${parseFloat(p.preco||0).toFixed(2)}</div>
+        <div class="cat-item-cat">${p.cat}</div>
+      </div>
+    </div>`).join('');
+}
+
+function imprimirCatalogo() {
+  showPage('catalogo');
+  setTimeout(() => window.print(), 600);
+}
+
+function shareCatalog() {
+  const base = window.location.href.split('#')[0].split('?')[0];
+  const url = base + '#catalogo';
+  if (navigator.share) {
+    navigator.share({
+      title: document.getElementById('cat-title').textContent + ' — Catálogo',
+      text: 'Confira nosso catálogo!',
+      url: url
+    }).catch(() => copiarLinkCatalogo(url));
+  } else {
+    copiarLinkCatalogo(url);
+  }
+}
+
+function copiarLinkCatalogo(url) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url)
+      .then(() => toast('✅ Link do catálogo copiado! Cole onde quiser.'))
+      .catch(() => prompt('Copie o link do catálogo:', url));
+  } else {
+    prompt('Copie o link do catálogo:', url);
+  }
+}
+
+// ═══════════════════════════════
+//  GOOGLE SHEETS — CONEXÃO
+// ═══════════════════════════════
+function setConnectedState(v) {
+  const badge = document.getElementById('google-status-badge');
+  const statusText = document.getElementById('google-status-text');
+  const chip = document.getElementById('google-status-chip');
+  const card = document.getElementById('google-card-status');
+  const cardSync = document.getElementById('card-sync');
+  if (v) {
+    badge.classList.add('connected');
+    statusText.textContent = 'Sheets conectado';
+    chip.textContent = '✓ Conectado';
+    chip.style.cssText = 'background:rgba(15,157,88,0.1);border:1px solid rgba(15,157,88,0.3);color:var(--google-green);font-size:0.75rem;padding:4px 12px;border-radius:20px;font-weight:600;';
+    card.classList.add('connected');
+    cardSync.style.display = 'block';
+  } else {
+    badge.classList.remove('connected');
+    statusText.textContent = 'Conectar Google';
+    chip.textContent = 'Não configurado';
+    chip.style.cssText = 'background:var(--surface3);color:var(--text-muted);font-size:0.75rem;padding:4px 12px;border-radius:20px;font-weight:600;';
+    card.classList.remove('connected');
+    cardSync.style.display = 'none';
+  }
+}
+
+function refreshGooglePage() {
+  const url = LS.get(KEYS.sheetsUrl);
+  if (url) {
+    document.getElementById('sheets_url').value = url;
+    sheetsUrl = url;
+    setConnectedState(true);
+  }
+}
+
+async function conectarSheets() {
+  const url = document.getElementById('sheets_url').value.trim();
+  if (!url || !url.startsWith('https://script.google.com')) {
+    toast('URL inválida. Deve começar com https://script.google.com/macros/s/...', false);
+    return;
+  }
+  const feedback = document.getElementById('conn-feedback');
+  feedback.style.display = 'block';
+  feedback.innerHTML = '<span style="color:var(--text-muted);">🔄 Salvando conexão...</span>';
+  // Save URL directly — CORS blocks us from reading response, but Apps Script still receives requests
+  sheetsUrl = url;
+  LS.set(KEYS.sheetsUrl, url);
+  setConnectedState(true);
+  feedback.innerHTML = '<span style="color:var(--google-green);">✅ URL salva! Agora vá em "Calcular" e salve um produto para testar.</span>';
+  toast('Google Sheets conectado!');
+}
+
+async function desconectarSheets() {
+  if (!confirm('Desconectar do Google Sheets?')) return;
+  LS.del(KEYS.sheetsUrl);
+  sheetsUrl = null;
+  document.getElementById('sheets_url').value = '';
+  setConnectedState(false);
+  toast('Desconectado do Sheets');
+}
+
+function copiarScript() {
+  const code = document.getElementById('script-code').textContent;
+  navigator.clipboard.writeText(code).then(() => toast('Código copiado!')).catch(() => toast('Erro ao copiar', false));
+}
+
+// ═══════════════════════════════
+//  INIT
+// ═══════════════════════════════
+function init() {
+  loadConfig();
+  const logo = LS.get(KEYS.logo);
+  if (logo) applyLogo(logo);
+  const url = LS.get(KEYS.sheetsUrl);
+  if (url) { sheetsUrl = url; setConnectedState(true); }
+  calcPreco();
+  renderMats();
+  // Hash navigation — opens correct page from shared link
+  const hash = window.location.hash.replace('#', '');
+  if (hash && document.getElementById('page-' + hash)) {
+    showPage(hash);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
