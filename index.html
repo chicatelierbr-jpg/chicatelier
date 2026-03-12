@@ -174,6 +174,90 @@ input::placeholder { color: var(--text-muted); }
   .cat-hero { background: white !important; box-shadow: none !important; border: 1px solid #ddd !important; }
   .cat-item { break-inside: avoid; border: 1px solid #ddd !important; box-shadow: none !important; }
   .cat-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  /* Orçamento print */
+  #orc-print-area { display: block !important; }
+  #orc-print-area * { visibility: visible !important; }
+  .orc-no-print { display: none !important; }
+}
+
+/* ═══════════════════ ORÇAMENTO ═══════════════════ */
+.orc-dados-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.orc-catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 8px; }
+.orc-cat-card {
+  background: var(--surface2); border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 16px; cursor: pointer; transition: all 0.18s; position: relative; text-align: center;
+}
+.orc-cat-card:hover { border-color: var(--rose); transform: translateY(-2px); box-shadow: 0 6px 20px var(--shadow); }
+.orc-cat-card .oc-emoji { font-size: 1.9rem; margin-bottom: 6px; display: block; }
+.orc-cat-card .oc-nome { font-family: 'Playfair Display', serif; font-size: 0.92rem; font-weight: 600; }
+.orc-cat-card .oc-cat { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+.orc-cat-card .oc-preco { font-weight: 700; color: var(--rose); font-size: 0.95rem; margin-top: 6px; }
+.orc-cat-card .oc-add { position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; background:var(--rose); color:white; border:none; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+.orc-cat-card .oc-add:hover { background:var(--rose-deep); transform:scale(1.1); }
+.orc-filter-pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+.orc-pill { padding:5px 14px; border-radius:20px; font-size:0.78rem; font-weight:600; cursor:pointer; border:1.5px solid var(--border); background:var(--surface2); color:var(--text-dim); transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+.orc-pill.on { background:var(--rose); border-color:var(--rose); color:white; }
+.orc-pill:hover:not(.on) { border-color:var(--rose-light); color:var(--rose); }
+.orc-table { width:100%; border-collapse:collapse; font-size:0.87rem; }
+.orc-table th { background:var(--surface2); padding:10px 14px; text-align:left; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-muted); border-bottom:2px solid var(--border); }
+.orc-table td { padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.orc-table tr:last-child td { border-bottom:none; }
+.orc-table tr:hover td { background:var(--surface2); }
+.qty-ctrl { display:flex; align-items:center; gap:8px; }
+.qty-btn { width:28px; height:28px; border-radius:50%; border:1.5px solid var(--border); background:var(--surface); cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; transition:all 0.15s; line-height:1; padding:0; font-family:'DM Sans',sans-serif; }
+.qty-btn:hover { border-color:var(--rose); color:var(--rose); }
+.qty-num { min-width:28px; text-align:center; font-weight:700; font-size:0.95rem; }
+.orc-subtotal-val { font-weight:700; color:var(--rose-deep); }
+.orc-resumo-box { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:20px 24px; }
+.orc-resumo-row { display:flex; justify-content:space-between; padding:5px 0; font-size:0.88rem; color:var(--text-dim); }
+.orc-resumo-total { display:flex; justify-content:space-between; padding:14px 0 0; margin-top:8px; border-top:2px solid var(--border-dark); }
+.orc-resumo-total .lbl { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); }
+.orc-resumo-total .val { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--rose); }
+.orc-badge { display:inline-flex; align-items:center; justify-content:center; background:var(--rose); color:white; font-size:0.65rem; font-weight:700; min-width:18px; height:18px; border-radius:9px; padding:0 5px; margin-left:6px; vertical-align:middle; }
+
+/* ═════ PDF DO ORÇAMENTO ═════ */
+#orc-print-area {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: white; overflow: auto;
+  padding: 48px 56px;
+  font-family: 'DM Sans', sans-serif;
+  color: #2A1F16;
+}
+.orc-pdf-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:36px; padding-bottom:24px; border-bottom:2.5px solid #B5614A; }
+.orc-pdf-logo-wrap { display:flex; align-items:center; gap:14px; }
+.orc-pdf-logo-img { max-height:64px; max-width:180px; object-fit:contain; }
+.orc-pdf-logo-emoji { font-size:2.8rem; }
+.orc-pdf-atelier-name { font-family:'Playfair Display',serif; font-size:1.7rem; font-weight:700; color:#2A1F16; line-height:1.1; }
+.orc-pdf-slogan { font-size:0.78rem; color:#7A6555; font-style:italic; margin-top:2px; }
+.orc-pdf-meta { text-align:right; }
+.orc-pdf-num { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:#B5614A; }
+.orc-pdf-dates { font-size:0.78rem; color:#7A6555; margin-top:4px; line-height:1.7; }
+.orc-pdf-cliente { margin-bottom:28px; }
+.orc-pdf-cliente-lbl { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#A8927E; margin-bottom:4px; }
+.orc-pdf-cliente-nome { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:600; }
+.orc-pdf-table { width:100%; border-collapse:collapse; margin-bottom:28px; font-size:0.85rem; }
+.orc-pdf-table th { background:#B5614A; color:white; padding:11px 14px; text-align:left; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.07em; font-weight:600; }
+.orc-pdf-table th:last-child { text-align:right; }
+.orc-pdf-table td { padding:11px 14px; border-bottom:1px solid #EDE5DC; }
+.orc-pdf-table td:last-child { text-align:right; font-weight:700; color:#8B3D29; }
+.orc-pdf-table tr:nth-child(even) td { background:#FAF7F4; }
+.orc-pdf-totals { display:flex; justify-content:flex-end; margin-bottom:28px; }
+.orc-pdf-totals-inner { min-width:280px; }
+.orc-pdf-tot-row { display:flex; justify-content:space-between; padding:5px 0; font-size:0.85rem; color:#7A6555; }
+.orc-pdf-tot-final { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; background:#B5614A; border-radius:10px; margin-top:10px; color:white; }
+.orc-pdf-tot-final .lbl { font-size:0.82rem; opacity:.88; }
+.orc-pdf-tot-final .val { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:700; }
+.orc-pdf-obs { background:#FAF7F4; border-left:4px solid #B5614A; border-radius:0 8px 8px 0; padding:14px 18px; margin-bottom:20px; font-size:0.84rem; color:#2A1F16; line-height:1.6; }
+.orc-pdf-obs-lbl { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#A8927E; margin-bottom:6px; }
+.orc-pdf-rodape { text-align:center; font-size:0.72rem; color:#A8927E; margin-top:32px; padding-top:16px; border-top:1px solid #EDE5DC; }
+.orc-pdf-close { position:fixed; top:16px; right:20px; background:#B5614A; color:white; border:none; border-radius:8px; padding:10px 18px; font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:600; cursor:pointer; z-index:10000; }
+.orc-pdf-close:hover { background:#8B3D29; }
+.orc-pdf-print-btn { position:fixed; top:16px; right:130px; background:#C4934A; color:white; border:none; border-radius:8px; padding:10px 18px; font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:600; cursor:pointer; z-index:10000; }
+.orc-pdf-print-btn:hover { background:#a87730; }
+@media print {
+  .orc-pdf-close, .orc-pdf-print-btn { display:none !important; }
+  #orc-print-area { position:static; padding:20px; }
 }
 </style>
 </head>
@@ -200,6 +284,7 @@ input::placeholder { color: var(--text-muted); }
     <button class="nav-btn" onclick="showPage('calc')">✦ Calcular</button>
     <button class="nav-btn" onclick="showPage('produtos')">📦 Produtos</button>
     <button class="nav-btn" onclick="showPage('catalogo')">📖 Catálogo</button>
+    <button class="nav-btn" onclick="showPage('orcamento')">🧾 Orçamento</button>
     <button class="nav-btn" onclick="showPage('google')">🔗 Google</button>
   </nav>
   <div class="google-status" id="google-status-badge" onclick="showPage('google')">
@@ -213,6 +298,7 @@ input::placeholder { color: var(--text-muted); }
   <button class="mobile-nav-btn" onclick="showPage('calc')"><span>✦</span>Calcular</button>
   <button class="mobile-nav-btn" onclick="showPage('produtos')"><span>📦</span>Produtos</button>
   <button class="mobile-nav-btn" onclick="showPage('catalogo')"><span>📖</span>Catálogo</button>
+  <button class="mobile-nav-btn" onclick="showPage('orcamento')"><span>🧾</span>Orçamento</button>
   <button class="mobile-nav-btn" onclick="showPage('google')"><span>🔗</span>Google</button>
 </div>
 
@@ -405,6 +491,153 @@ input::placeholder { color: var(--text-muted); }
   </div>
   <div class="cat-divider">✦ coleção ✦</div>
   <div id="cat-grid" class="cat-grid"></div>
+</div>
+
+<!-- PAGE: ORÇAMENTO -->
+<div class="page" id="page-orcamento">
+  <div class="section-eyebrow">Vendas</div>
+  <div class="section-title">Gerar Orçamento</div>
+  <div class="section-sub">Selecione os produtos do seu catálogo, defina as quantidades e gere um PDF profissional para o cliente.</div>
+
+  <!-- Dados do cliente -->
+  <div class="card">
+    <div class="card-header"><div class="card-icon">👤</div><h3>Dados do Orçamento</h3></div>
+    <div class="orc-dados-grid">
+      <div class="form-group"><label>Nome do Cliente *</label><input type="text" id="orc_cliente" placeholder="Nome completo do cliente"></div>
+      <div class="form-group"><label>Número do Orçamento</label><input type="text" id="orc_num" placeholder="ORC-001"></div>
+      <div class="form-group"><label>Data do Orçamento</label><input type="date" id="orc_data"></div>
+      <div class="form-group"><label>Validade</label><input type="date" id="orc_validade"></div>
+      <div class="form-group span2"><label>Observações / Condições de entrega</label><textarea id="orc_obs" placeholder="Prazo de entrega, personalização, formas de pagamento..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- Catálogo de produtos para adicionar -->
+  <div class="card orc-no-print">
+    <div class="card-header">
+      <div class="card-icon">🛍</div>
+      <h3>Adicionar Produtos</h3>
+      <button class="btn btn-ghost btn-sm orc-no-print" style="margin-left:auto;" onclick="recarregarOrcCatalogo()">🔄 Atualizar</button>
+    </div>
+    <div class="orc-filter-pills" id="orc-cat-pills"></div>
+    <div class="orc-catalog-grid" id="orc-catalog-grid">
+      <div class="empty" style="grid-column:1/-1; padding:32px 20px;">
+        <span class="empty-icon">📦</span>
+        <h3>Carregando produtos...</h3>
+        <p>Conecte o Google Sheets para ver seus produtos aqui.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Itens do orçamento -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🧾</div>
+      <h3>Itens do Orçamento <span id="orc-badge" class="orc-badge" style="display:none">0</span></h3>
+    </div>
+    <div id="orc-empty-msg" class="empty" style="padding:36px 20px;">
+      <span class="empty-icon">🛒</span>
+      <h3>Nenhum item adicionado</h3>
+      <p>Clique nos produtos acima para adicioná-los ao orçamento.</p>
+    </div>
+    <div id="orc-table-wrap" style="display:none; overflow-x:auto;">
+      <table class="orc-table">
+        <thead><tr>
+          <th></th><th>Produto</th><th>Preço Unit.</th><th>Quantidade</th><th>Subtotal</th><th class="orc-no-print"></th>
+        </tr></thead>
+        <tbody id="orc-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Desconto + frete + total -->
+    <div id="orc-totais-wrap" style="display:none; margin-top:20px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap;">
+        <div class="orc-no-print" style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding-top:8px;">
+          <div class="form-group" style="min-width:130px;">
+            <label>Desconto geral (%)</label>
+            <input type="number" id="orc_desconto" value="0" min="0" max="100" step="1" oninput="calcOrcTotal()" style="width:100%;">
+          </div>
+          <div class="form-group" style="min-width:130px;">
+            <label>Frete adicional (R$)</label>
+            <div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="orc_frete" value="0" min="0" step="0.01" oninput="calcOrcTotal()"></div>
+          </div>
+        </div>
+        <div class="orc-resumo-box" style="min-width:280px;">
+          <div class="orc-resumo-row"><span>Subtotal</span><span id="orc-r-subtotal">R$ 0,00</span></div>
+          <div class="orc-resumo-row" id="orc-r-desc-row" style="display:none; color:var(--danger);"><span id="orc-r-desc-lbl">Desconto (0%)</span><span id="orc-r-desc-val">– R$ 0,00</span></div>
+          <div class="orc-resumo-row"><span>Frete</span><span id="orc-r-frete">R$ 0,00</span></div>
+          <div class="orc-resumo-total">
+            <div><div class="lbl">Total do Orçamento</div></div>
+            <div class="val" id="orc-r-total">R$ 0,00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botões de ação -->
+    <div class="orc-no-print" style="display:flex; gap:10px; margin-top:24px; flex-wrap:wrap;">
+      <button class="btn btn-gold" onclick="abrirPdfOrcamento()">📄 Gerar PDF / Imprimir</button>
+      <button class="btn btn-ghost" onclick="limparOrcamento()">🗑 Limpar Orçamento</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═════ PDF PREVIEW DO ORÇAMENTO ═════ -->
+<div id="orc-print-area">
+  <button class="orc-pdf-close" onclick="fecharPdfOrcamento()">✕ Fechar</button>
+  <button class="orc-pdf-print-btn" onclick="window.print()">🖨 Imprimir / PDF</button>
+
+  <div class="orc-pdf-header">
+    <div class="orc-pdf-logo-wrap">
+      <img id="orc-pdf-logo-img" class="orc-pdf-logo-img" src="" style="display:none;" alt="Logo">
+      <span id="orc-pdf-logo-emoji" class="orc-pdf-logo-emoji">🪡</span>
+      <div>
+        <div class="orc-pdf-atelier-name" id="orc-pdf-atelier-name">Chicatelier</div>
+        <div class="orc-pdf-slogan" id="orc-pdf-slogan">feito para você</div>
+      </div>
+    </div>
+    <div class="orc-pdf-meta">
+      <div class="orc-pdf-num" id="orc-pdf-num">ORC-001</div>
+      <div style="font-size:0.68rem; color:#A8927E; text-transform:uppercase; letter-spacing:0.08em;">Orçamento</div>
+      <div class="orc-pdf-dates" id="orc-pdf-dates"></div>
+    </div>
+  </div>
+
+  <div class="orc-pdf-cliente">
+    <div class="orc-pdf-cliente-lbl">Para</div>
+    <div class="orc-pdf-cliente-nome" id="orc-pdf-cliente-nome">—</div>
+  </div>
+
+  <table class="orc-pdf-table">
+    <thead><tr>
+      <th>Produto</th><th>Categoria</th><th style="text-align:center">Qtd</th><th style="text-align:right">Unit.</th><th>Subtotal</th>
+    </tr></thead>
+    <tbody id="orc-pdf-tbody"></tbody>
+  </table>
+
+  <div class="orc-pdf-totals">
+    <div class="orc-pdf-totals-inner">
+      <div class="orc-pdf-tot-row"><span>Subtotal</span><span id="orc-pdf-subtotal">R$ 0,00</span></div>
+      <div class="orc-pdf-tot-row" id="orc-pdf-desc-row" style="display:none; color:#c44;"><span id="orc-pdf-desc-lbl">Desconto</span><span id="orc-pdf-desc-val">– R$ 0,00</span></div>
+      <div class="orc-pdf-tot-row"><span>Frete</span><span id="orc-pdf-frete">R$ 0,00</span></div>
+      <div class="orc-pdf-tot-final">
+        <span class="lbl">Valor Total</span>
+        <span class="val" id="orc-pdf-total">R$ 0,00</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="orc-pdf-obs-block" style="display:none;">
+    <div class="orc-pdf-obs">
+      <div class="orc-pdf-obs-lbl">Observações</div>
+      <div id="orc-pdf-obs-text"></div>
+    </div>
+  </div>
+
+  <div id="orc-pdf-validade-block" style="display:none; font-size:0.8rem; color:#A8927E; margin-bottom:8px;">
+    ⏳ Validade deste orçamento: <strong id="orc-pdf-validade-text"></strong>
+  </div>
+
+  <div class="orc-pdf-rodape" id="orc-pdf-rodape">Orçamento gerado pelo sistema Chicatelier · Peças artesanais com amor</div>
 </div>
 
 <!-- PAGE: GOOGLE -->
@@ -601,6 +834,7 @@ function showPage(id) {
   if (id === 'produtos') carregarProdutos();
   if (id === 'catalogo') renderCatalogo();
   if (id === 'google') refreshGooglePage();
+  if (id === 'orcamento') { orcDatasDefault(); recarregarOrcCatalogo(); }
 }
 
 // ═══════════════════════════════
@@ -1151,8 +1385,257 @@ function copiarScript() {
 }
 
 // ═══════════════════════════════
+//  ORÇAMENTO
+// ═══════════════════════════════
+let orcItens = []; // [{produto, qty}]
+let orcCatFiltro = 'Todas';
+let orcProdutos = [];
+
+function fmtR(n) { return 'R$ ' + parseFloat(n||0).toFixed(2).replace('.', ','); }
+function fmtN(n) { return parseFloat(n||0).toFixed(2).replace('.', ','); }
+
+async function recarregarOrcCatalogo() {
+  if (!sheetsUrl) {
+    document.getElementById('orc-catalog-grid').innerHTML = `
+      <div class="empty" style="grid-column:1/-1; padding:32px 20px;">
+        <span class="empty-icon">🔗</span><h3>Google Sheets não conectado</h3>
+        <p>Configure na aba "Google" para ver seus produtos.</p>
+        <button class="btn btn-google-green btn-sm" style="margin-top:12px;" onclick="showPage('google')">Configurar agora</button>
+      </div>`;
+    return;
+  }
+  showLoading(true, 'Carregando catálogo...');
+  const prods = await buscarProdutosSheets();
+  showLoading(false);
+  if (!prods || !prods.length) {
+    document.getElementById('orc-catalog-grid').innerHTML = `
+      <div class="empty" style="grid-column:1/-1; padding:32px 20px;">
+        <span class="empty-icon">🧵</span><h3>Nenhum produto cadastrado</h3>
+        <p>Salve produtos na aba "Calcular" para montar orçamentos.</p>
+      </div>`;
+    return;
+  }
+  orcProdutos = prods;
+  renderOrcCatalogoPills();
+  renderOrcCatalogoGrid();
+}
+
+function renderOrcCatalogoPills() {
+  const cats = ['Todas', ...new Set(orcProdutos.map(p => p.cat).filter(Boolean))];
+  document.getElementById('orc-cat-pills').innerHTML = cats.map(c =>
+    `<button class="orc-pill${c === orcCatFiltro ? ' on' : ''}" onclick="filtrarOrcCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+function filtrarOrcCat(cat) {
+  orcCatFiltro = cat;
+  renderOrcCatalogoPills();
+  renderOrcCatalogoGrid();
+}
+
+function renderOrcCatalogoGrid() {
+  const filtrados = orcCatFiltro === 'Todas' ? orcProdutos : orcProdutos.filter(p => p.cat === orcCatFiltro);
+  if (!filtrados.length) {
+    document.getElementById('orc-catalog-grid').innerHTML = `<div class="empty" style="grid-column:1/-1;padding:24px"><span class="empty-icon">🔍</span><h3>Nenhum produto nesta categoria</h3></div>`;
+    return;
+  }
+  document.getElementById('orc-catalog-grid').innerHTML = filtrados.map(p => `
+    <div class="orc-cat-card" onclick="adicionarItemOrc('${p.id}')">
+      <button class="oc-add" onclick="event.stopPropagation(); adicionarItemOrc('${p.id}')">+</button>
+      <span class="oc-emoji">${p.emoji || '🧵'}</span>
+      <div class="oc-nome">${p.nome}</div>
+      <div class="oc-cat">${p.cat}</div>
+      <div class="oc-preco">${fmtR(p.preco)}</div>
+    </div>`).join('');
+}
+
+function adicionarItemOrc(id) {
+  const p = orcProdutos.find(x => String(x.id) === String(id));
+  if (!p) return;
+  const existe = orcItens.find(i => String(i.produto.id) === String(id));
+  if (existe) { existe.qty++; }
+  else { orcItens.push({ produto: p, qty: 1 }); }
+  renderOrcTabela();
+  atualizarOrcBadge();
+  toast(`"${p.nome}" adicionado ao orçamento`);
+}
+
+function alterarQtyOrc(id, delta) {
+  const item = orcItens.find(i => String(i.produto.id) === String(id));
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  renderOrcTabela();
+  atualizarOrcBadge();
+}
+
+function removerItemOrc(id) {
+  orcItens = orcItens.filter(i => String(i.produto.id) !== String(id));
+  renderOrcTabela();
+  atualizarOrcBadge();
+}
+
+function renderOrcTabela() {
+  const empty = document.getElementById('orc-empty-msg');
+  const wrap = document.getElementById('orc-table-wrap');
+  const totWrap = document.getElementById('orc-totais-wrap');
+  if (!orcItens.length) {
+    empty.style.display = ''; wrap.style.display = 'none'; totWrap.style.display = 'none';
+    calcOrcTotal(); return;
+  }
+  empty.style.display = 'none'; wrap.style.display = 'block'; totWrap.style.display = 'block';
+  document.getElementById('orc-tbody').innerHTML = orcItens.map(item => {
+    const sub = parseFloat(item.produto.preco || 0) * item.qty;
+    return `<tr>
+      <td style="font-size:1.5rem; width:48px">${item.produto.emoji || '🧵'}</td>
+      <td><strong>${item.produto.nome}</strong><div style="font-size:0.73rem;color:var(--text-muted)">${item.produto.cat}</div></td>
+      <td>${fmtR(item.produto.preco)}</td>
+      <td>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="alterarQtyOrc('${item.produto.id}',-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="alterarQtyOrc('${item.produto.id}',1)">+</button>
+        </div>
+      </td>
+      <td class="orc-subtotal-val">${fmtR(sub)}</td>
+      <td class="orc-no-print"><button class="btn btn-danger btn-sm" onclick="removerItemOrc('${item.produto.id}')">✕</button></td>
+    </tr>`;
+  }).join('');
+  calcOrcTotal();
+}
+
+function calcOrcTotal() {
+  const subtotal = orcItens.reduce((s, i) => s + parseFloat(i.produto.preco || 0) * i.qty, 0);
+  const descPct = parseFloat(document.getElementById('orc_desconto')?.value || 0);
+  const frete = parseFloat(document.getElementById('orc_frete')?.value || 0);
+  const descVal = subtotal * descPct / 100;
+  const total = subtotal - descVal + frete;
+  const fmt = (n) => 'R$ ' + n.toFixed(2).replace('.', ',');
+  const safeSet = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  safeSet('orc-r-subtotal', fmt(subtotal));
+  safeSet('orc-r-frete', fmt(frete));
+  safeSet('orc-r-total', fmt(total));
+  const descRow = document.getElementById('orc-r-desc-row');
+  if (descRow) {
+    if (descPct > 0) {
+      descRow.style.display = 'flex';
+      safeSet('orc-r-desc-lbl', `Desconto (${descPct}%)`);
+      safeSet('orc-r-desc-val', `– R$ ${descVal.toFixed(2).replace('.', ',')}`);
+    } else { descRow.style.display = 'none'; }
+  }
+}
+
+function atualizarOrcBadge() {
+  const total = orcItens.reduce((s, i) => s + i.qty, 0);
+  const badge = document.getElementById('orc-badge');
+  if (badge) { badge.textContent = total; badge.style.display = total > 0 ? '' : 'none'; }
+}
+
+function limparOrcamento() {
+  if (orcItens.length && !confirm('Limpar todos os itens do orçamento?')) return;
+  orcItens = [];
+  renderOrcTabela();
+  atualizarOrcBadge();
+}
+
+function abrirPdfOrcamento() {
+  const cliente = document.getElementById('orc_cliente')?.value.trim();
+  if (!cliente) { toast('Informe o nome do cliente antes de gerar o PDF.', false); return; }
+  if (!orcItens.length) { toast('Adicione ao menos um produto ao orçamento.', false); return; }
+
+  // Dados básicos
+  const num = document.getElementById('orc_num')?.value || 'ORC-001';
+  const dataStr = document.getElementById('orc_data')?.value;
+  const validadeStr = document.getElementById('orc_validade')?.value;
+  const obs = document.getElementById('orc_obs')?.value.trim();
+  const descPct = parseFloat(document.getElementById('orc_desconto')?.value || 0);
+  const frete = parseFloat(document.getElementById('orc_frete')?.value || 0);
+
+  const subtotal = orcItens.reduce((s, i) => s + parseFloat(i.produto.preco || 0) * i.qty, 0);
+  const descVal = subtotal * descPct / 100;
+  const total = subtotal - descVal + frete;
+  const fmt = (n) => 'R$ ' + parseFloat(n).toFixed(2).replace('.', ',');
+
+  // Logo — usa a mesma do header
+  const pdfLogoImg = document.getElementById('orc-pdf-logo-img');
+  const pdfLogoEmoji = document.getElementById('orc-pdf-logo-emoji');
+  if (logoDataUrl) {
+    pdfLogoImg.src = logoDataUrl; pdfLogoImg.style.display = 'block'; pdfLogoEmoji.style.display = 'none';
+  } else {
+    pdfLogoImg.style.display = 'none'; pdfLogoEmoji.style.display = 'block';
+  }
+
+  // Nome e slogan do atelier
+  const nomeAtelier = document.getElementById('atelier_nome')?.value || 'Chicatelier';
+  const sloganAtelier = document.getElementById('atelier_slogan')?.value || 'feito para você';
+  document.getElementById('orc-pdf-atelier-name').textContent = nomeAtelier;
+  document.getElementById('orc-pdf-slogan').textContent = sloganAtelier;
+  document.getElementById('orc-pdf-rodape').textContent = `Orçamento gerado pelo sistema ${nomeAtelier} · Peças artesanais com amor`;
+
+  // Número e datas
+  document.getElementById('orc-pdf-num').textContent = num;
+  let datesHtml = '';
+  if (dataStr) datesHtml += `Emissão: ${new Date(dataStr + 'T12:00').toLocaleDateString('pt-BR')}<br>`;
+  if (validadeStr) datesHtml += `Válido até: ${new Date(validadeStr + 'T12:00').toLocaleDateString('pt-BR')}`;
+  document.getElementById('orc-pdf-dates').innerHTML = datesHtml;
+  document.getElementById('orc-pdf-cliente-nome').textContent = cliente;
+
+  // Tabela de itens
+  document.getElementById('orc-pdf-tbody').innerHTML = orcItens.map(item => `
+    <tr>
+      <td>${item.produto.emoji || '🧵'} ${item.produto.nome}</td>
+      <td style="color:#7A6555">${item.produto.cat}</td>
+      <td style="text-align:center">${item.qty}</td>
+      <td style="text-align:right">R$ ${fmtN(item.produto.preco)}</td>
+      <td>R$ ${fmtN(parseFloat(item.produto.preco || 0) * item.qty)}</td>
+    </tr>`).join('');
+
+  // Totais
+  document.getElementById('orc-pdf-subtotal').textContent = fmt(subtotal);
+  document.getElementById('orc-pdf-frete').textContent = fmt(frete);
+  document.getElementById('orc-pdf-total').textContent = fmt(total);
+  const descRow = document.getElementById('orc-pdf-desc-row');
+  if (descPct > 0) {
+    descRow.style.display = 'flex';
+    document.getElementById('orc-pdf-desc-lbl').textContent = `Desconto (${descPct}%)`;
+    document.getElementById('orc-pdf-desc-val').textContent = `– R$ ${fmtN(descVal)}`;
+  } else { descRow.style.display = 'none'; }
+
+  // Obs e validade
+  const obsBlock = document.getElementById('orc-pdf-obs-block');
+  if (obs) { obsBlock.style.display = 'block'; document.getElementById('orc-pdf-obs-text').textContent = obs; }
+  else { obsBlock.style.display = 'none'; }
+  const valBlock = document.getElementById('orc-pdf-validade-block');
+  if (validadeStr) {
+    valBlock.style.display = 'block';
+    document.getElementById('orc-pdf-validade-text').textContent = new Date(validadeStr + 'T12:00').toLocaleDateString('pt-BR');
+  } else { valBlock.style.display = 'none'; }
+
+  // Mostrar overlay
+  document.getElementById('orc-print-area').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharPdfOrcamento() {
+  document.getElementById('orc-print-area').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// ═══════════════════════════════
 //  INIT
 // ═══════════════════════════════
+function orcDatasDefault() {
+  // Only set dates if empty
+  const dataEl = document.getElementById('orc_data');
+  const valEl = document.getElementById('orc_validade');
+  const numEl = document.getElementById('orc_num');
+  if (dataEl && !dataEl.value) dataEl.value = new Date().toISOString().split('T')[0];
+  if (valEl && !valEl.value) {
+    const v = new Date(); v.setDate(v.getDate() + 15);
+    valEl.value = v.toISOString().split('T')[0];
+  }
+  if (numEl && !numEl.value) numEl.value = 'ORC-' + String(Date.now()).slice(-5);
+}
+
 function init() {
   loadConfig();
   const logo = LS.get(KEYS.logo);
