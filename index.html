@@ -259,6 +259,63 @@ input::placeholder { color: var(--text-muted); }
   .orc-pdf-close, .orc-pdf-print-btn { display:none !important; }
   #orc-print-area { position:static; padding:20px; }
 }
+
+/* ═══════════════════ AGENDA / KANBAN ═══════════════════ */
+.kanban-wrap { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; align-items:start; }
+@media (max-width:900px) { .kanban-wrap { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:500px) { .kanban-wrap { grid-template-columns:1fr; } }
+.kanban-col { background:var(--surface2); border:1px solid var(--border); border-radius:16px; overflow:hidden; min-height:200px; }
+.kanban-col.drag-over { border-color:var(--rose); background:var(--rose-dim); }
+.kanban-col-header { padding:14px 16px; display:flex; align-items:center; gap:8px; border-bottom:2px solid var(--border); background:var(--surface); border-top:3px solid var(--col-color); }
+.kanban-col-title { font-weight:700; font-size:0.85rem; color:var(--text); flex:1; }
+.kanban-col-icon { font-size:1.1rem; }
+.kanban-col-count { background:var(--surface2); border:1px solid var(--border); border-radius:20px; font-size:0.7rem; font-weight:700; color:var(--text-muted); padding:2px 8px; }
+.kanban-cards { padding:10px; display:flex; flex-direction:column; gap:8px; min-height:80px; }
+.kanban-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; cursor:grab; transition:all 0.18s; box-shadow:0 2px 8px var(--shadow); }
+.kanban-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px var(--shadow); border-color:var(--rose); }
+.kanban-card.dragging { opacity:0.4; transform:rotate(2deg); }
+.kcard-produto { font-family:'Playfair Display',serif; font-weight:600; font-size:0.95rem; color:var(--text); margin-bottom:4px; }
+.kcard-cliente { font-size:0.8rem; color:var(--text-dim); margin-bottom:8px; }
+.kcard-meta { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.kcard-tag { font-size:0.68rem; padding:3px 8px; border-radius:20px; font-weight:600; }
+.kcard-tag.entrega { background:var(--gold-dim); color:#8B6420; border:1px solid rgba(196,147,74,0.25); }
+.kcard-tag.entrega.urgente { background:rgba(181,80,58,0.1); color:var(--danger); border-color:rgba(181,80,58,0.3); }
+.kcard-tag.valor { background:var(--rose-dim); color:var(--rose-deep); border:1px solid rgba(181,97,74,0.2); }
+.kcard-tag.pago { background:rgba(90,158,116,0.12); color:var(--success); border:1px solid rgba(90,158,116,0.3); }
+.kcard-tag.nao-pago { background:rgba(181,80,58,0.08); color:var(--danger); border:1px solid rgba(181,80,58,0.2); }
+.kcard-contato { font-size:0.72rem; color:var(--text-muted); }
+.kcard-actions { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+.agenda-alert-bar { background:rgba(181,80,58,0.08); border:1px solid rgba(181,80,58,0.25); border-radius:12px; padding:12px 16px; margin-bottom:20px; display:flex; align-items:center; gap:10px; font-size:0.84rem; color:var(--danger); }
+
+/* ═══════════════════ CALCULADORA FLUTUANTE ═══════════════════ */
+#calc-fab { position:fixed; bottom:28px; right:28px; z-index:900; width:56px; height:56px; border-radius:50%; background:var(--rose); color:white; border:none; cursor:pointer; font-size:1.5rem; box-shadow:0 6px 24px rgba(181,97,74,0.4); transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
+#calc-fab:hover { background:var(--rose-deep); transform:scale(1.08); }
+#calc-panel { position:fixed; bottom:96px; right:28px; z-index:900; width:320px; background:var(--surface); border:1.5px solid var(--border); border-radius:20px; box-shadow:0 12px 48px rgba(42,31,22,0.18); display:none; flex-direction:column; overflow:hidden; animation:popUp 0.22s ease; }
+#calc-panel.open { display:flex; }
+@keyframes popUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.calc-tabs { display:flex; border-bottom:1.5px solid var(--border); background:var(--surface2); }
+.calc-tab { flex:1; padding:11px 6px; font-size:0.78rem; font-weight:600; font-family:'DM Sans',sans-serif; border:none; background:none; cursor:pointer; color:var(--text-muted); transition:all 0.18s; border-bottom:2px solid transparent; }
+.calc-tab.active { color:var(--rose); background:var(--surface); border-bottom-color:var(--rose); }
+.calc-screen { background:var(--surface2); padding:14px 16px 10px; text-align:right; }
+.calc-expr { font-size:0.75rem; color:var(--text-muted); min-height:18px; }
+.calc-display { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--text); word-break:break-all; min-height:44px; line-height:1.1; }
+.calc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; padding:12px; }
+.cb { padding:13px 4px; border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.15s; background:var(--surface2); color:var(--text); }
+.cb:hover { filter:brightness(0.94); transform:scale(0.96); }
+.cb.op { background:var(--rose-dim); color:var(--rose); }
+.cb.eq { background:var(--rose); color:white; grid-column:span 2; }
+.cb.eq:hover { background:var(--rose-deep); }
+.cb.clear { background:rgba(181,80,58,0.1); color:var(--danger); }
+.cb.zero { grid-column:span 2; }
+.calc-fabric-wrap { padding:16px; display:flex; flex-direction:column; gap:12px; }
+.calc-fabric-wrap label { font-size:0.68rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.07em; display:block; margin-bottom:4px; }
+.calc-fabric-wrap input { background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; padding:9px 12px; font-size:0.95rem; font-family:'DM Sans',sans-serif; color:var(--text); width:100%; }
+.calc-fabric-wrap input:focus { outline:none; border-color:var(--rose); background:var(--surface); }
+.fabric-row2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.fabric-result { background:linear-gradient(135deg,var(--rose-dim),var(--gold-dim)); border:1.5px solid var(--border); border-radius:12px; padding:14px; text-align:center; }
+.fabric-result .fr-label { font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px; }
+.fabric-result .fr-val { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:var(--rose); }
+.fabric-result .fr-sub { font-size:0.75rem; color:var(--text-dim); margin-top:2px; }
 </style>
 </head>
 <body>
@@ -286,6 +343,7 @@ input::placeholder { color: var(--text-muted); }
     <button class="nav-btn" onclick="showPage('catalogo')">📖 Catálogo</button>
     <button class="nav-btn" onclick="showPage('orcamento')">🧾 Orçamento</button>
     <button class="nav-btn" onclick="showPage('google')">🔗 Google</button>
+    <button class="nav-btn" onclick="showPage('agenda')">📅 Agenda</button>
   </nav>
   <div class="google-status" id="google-status-badge" onclick="showPage('google')">
     <div class="google-dot"></div>
@@ -300,6 +358,7 @@ input::placeholder { color: var(--text-muted); }
   <button class="mobile-nav-btn" onclick="showPage('catalogo')"><span>📖</span>Catálogo</button>
   <button class="mobile-nav-btn" onclick="showPage('orcamento')"><span>🧾</span>Orçamento</button>
   <button class="mobile-nav-btn" onclick="showPage('google')"><span>🔗</span>Google</button>
+  <button class="mobile-nav-btn" onclick="showPage('agenda')"><span>📅</span>Agenda</button>
 </div>
 
 <!-- PAGE: CONFIG -->
@@ -392,6 +451,7 @@ input::placeholder { color: var(--text-muted); }
   <div class="card">
     <div class="card-header"><div class="card-icon">⏱</div><h3>Tempo de Execução</h3></div>
     <div class="form-grid">
+      <div class="form-group"><label>Corte de material (min)</label><input type="number" id="p_min_corte" value="0" min="0" step="5" oninput="calcPreco()"></div>
       <div class="form-group"><label>Bordado (min)</label><input type="number" id="p_min_bord" value="0" min="0" step="5" oninput="calcPreco()"></div>
       <div class="form-group"><label>Complexidade bordado</label>
         <select id="p_complexidade" oninput="calcPreco()">
@@ -413,7 +473,7 @@ input::placeholder { color: var(--text-muted); }
     <button class="btn btn-ghost btn-sm" onclick="addMat()" style="margin-top:8px;">+ Adicionar material</button>
     <div class="sep"></div>
     <div class="form-grid">
-      <div class="form-group"><label>Linhas de bordar (cones)</label><input type="number" id="p_linhas" value="1" min="0" step="0.5" oninput="calcPreco()"></div>
+      <div class="form-group"><label>Linhas de bordar/costurar (cones)</label><input type="number" id="p_linhas" value="1" min="0" step="0.5" oninput="calcPreco()"></div>
       <div class="form-group"><label>Valor por cone (R$)</label><input type="number" id="p_linha_val" value="18" min="0" step="0.5" oninput="calcPreco()"></div>
     </div>
   </div>
@@ -455,6 +515,7 @@ input::placeholder { color: var(--text-muted); }
   </div>
   <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px; flex-wrap:wrap;">
     <button class="btn btn-ghost" onclick="limpar()">↺ Limpar</button>
+    <button class="btn btn-gold" onclick="salvarNaAgenda()">📅 Salvar na Agenda</button>
     <button class="btn btn-google-green" onclick="salvarNoSheets()">
       <span id="btn-salvar-label">📊 Salvar no Google Sheets</span>
     </button>
@@ -787,6 +848,138 @@ function doGet(e) {
   </div>
 </div>
 
+<!-- PAGE: AGENDA -->
+<div class="page" id="page-agenda">
+  <div class="section-eyebrow">Gestão de Pedidos</div>
+  <div class="section-title">Agenda de Encomendas</div>
+  <div class="section-sub">Acompanhe seus pedidos do orçamento à entrega. Arraste os cards entre as colunas para atualizar o status.</div>
+  <div id="agenda-alertas"></div>
+  <div style="display:flex; justify-content:flex-end; margin-bottom:24px;">
+    <button class="btn btn-primary" onclick="abrirModalPedido()">+ Novo Pedido</button>
+  </div>
+  <div class="kanban-wrap">
+    <div class="kanban-col" id="col-novo" ondragover="event.preventDefault()" ondrop="dropCard(event,'novo')">
+      <div class="kanban-col-header" style="--col-color:#C4934A;">
+        <span class="kanban-col-icon">🆕</span><span class="kanban-col-title">Novo Pedido</span>
+        <span class="kanban-col-count" id="count-novo">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-novo"></div>
+    </div>
+    <div class="kanban-col" id="col-andamento" ondragover="event.preventDefault()" ondrop="dropCard(event,'andamento')">
+      <div class="kanban-col-header" style="--col-color:#6B9E8A;">
+        <span class="kanban-col-icon">✂️</span><span class="kanban-col-title">Em Andamento</span>
+        <span class="kanban-col-count" id="count-andamento">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-andamento"></div>
+    </div>
+    <div class="kanban-col" id="col-pronto" ondragover="event.preventDefault()" ondrop="dropCard(event,'pronto')">
+      <div class="kanban-col-header" style="--col-color:#4285F4;">
+        <span class="kanban-col-icon">✅</span><span class="kanban-col-title">Pronto</span>
+        <span class="kanban-col-count" id="count-pronto">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-pronto"></div>
+    </div>
+    <div class="kanban-col" id="col-entregue" ondragover="event.preventDefault()" ondrop="dropCard(event,'entregue')">
+      <div class="kanban-col-header" style="--col-color:#5A9E74;">
+        <span class="kanban-col-icon">🎁</span><span class="kanban-col-title">Entregue</span>
+        <span class="kanban-col-count" id="count-entregue">0</span>
+      </div>
+      <div class="kanban-cards" id="cards-entregue"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Pedido -->
+<div id="modal-pedido" style="display:none; position:fixed; inset:0; z-index:800; background:rgba(42,31,22,0.5); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:20px;">
+  <div style="background:var(--surface); border-radius:20px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; box-shadow:0 24px 64px rgba(42,31,22,0.25); animation:fadeUp 0.25s ease;">
+    <div style="padding:24px 28px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+      <div>
+        <div style="font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--rose); font-weight:700; margin-bottom:4px;">Agenda</div>
+        <h3 id="modal-pedido-titulo" style="font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700;">Novo Pedido</h3>
+      </div>
+      <button onclick="fecharModalPedido()" style="background:var(--surface2); border:1px solid var(--border); border-radius:50%; width:34px; height:34px; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center;">×</button>
+    </div>
+    <div style="padding:24px 28px;">
+      <div class="form-grid">
+        <div class="form-group span2"><label>Produto / Descrição *</label><input type="text" id="ped-produto" placeholder="Ex: Toalha bordada monograma"></div>
+        <div class="form-group span2"><label>Nome do Cliente *</label><input type="text" id="ped-cliente" placeholder="Ex: Ana Silva"></div>
+        <div class="form-group span2"><label>Contato (WhatsApp / Telefone)</label><input type="text" id="ped-contato" placeholder="Ex: (98) 99999-9999"></div>
+        <div class="form-group"><label>Data de Entrega</label><input type="date" id="ped-entrega"></div>
+        <div class="form-group"><label>Valor (R$)</label><div class="pfx"><span class="pfx-symbol">R$</span><input type="number" id="ped-valor" step="0.01" placeholder="0,00"></div></div>
+        <div class="form-group span2"><label>Forma de Pagamento</label>
+          <select id="ped-pagamento">
+            <option value="">Selecione...</option>
+            <option>Pix</option><option>Dinheiro</option><option>Cartão de crédito</option>
+            <option>Cartão de débito</option><option>Transferência</option><option>A combinar</option>
+          </select>
+        </div>
+        <div class="form-group span2" style="flex-direction:row; align-items:center; gap:12px;">
+          <label style="text-transform:none; font-size:0.87rem; font-weight:600; color:var(--text); margin:0; cursor:pointer; display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="ped-pago" style="width:18px; height:18px; accent-color:var(--sage); cursor:pointer;">
+            Pagamento recebido ✓
+          </label>
+        </div>
+        <div class="form-group span2"><label>Observações</label><textarea id="ped-obs" placeholder="Detalhes, personalização, cores..." style="min-height:70px;"></textarea></div>
+      </div>
+    </div>
+    <div style="padding:16px 28px 24px; display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border);">
+      <button class="btn btn-ghost" onclick="fecharModalPedido()">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarPedido()">💾 Salvar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALCULADORA FLUTUANTE -->
+<button id="calc-fab" onclick="toggleCalc()" title="Calculadora">🧮</button>
+<div id="calc-panel">
+  <div class="calc-tabs">
+    <button class="calc-tab active" onclick="switchCalcTab('simple',this)">🔢 Simples</button>
+    <button class="calc-tab" onclick="switchCalcTab('fabric',this)">🧵 Tecido</button>
+  </div>
+  <div id="calc-simple">
+    <div class="calc-screen">
+      <div class="calc-expr" id="calc-expr"></div>
+      <div class="calc-display" id="calc-display">0</div>
+    </div>
+    <div class="calc-grid">
+      <button class="cb clear" onclick="calcClear()">C</button>
+      <button class="cb op" onclick="calcInput('±')">±</button>
+      <button class="cb op" onclick="calcInput('%')">%</button>
+      <button class="cb op" onclick="calcInput('÷')">÷</button>
+      <button class="cb" onclick="calcInput('7')">7</button>
+      <button class="cb" onclick="calcInput('8')">8</button>
+      <button class="cb" onclick="calcInput('9')">9</button>
+      <button class="cb op" onclick="calcInput('×')">×</button>
+      <button class="cb" onclick="calcInput('4')">4</button>
+      <button class="cb" onclick="calcInput('5')">5</button>
+      <button class="cb" onclick="calcInput('6')">6</button>
+      <button class="cb op" onclick="calcInput('-')">−</button>
+      <button class="cb" onclick="calcInput('1')">1</button>
+      <button class="cb" onclick="calcInput('2')">2</button>
+      <button class="cb" onclick="calcInput('3')">3</button>
+      <button class="cb op" onclick="calcInput('+')">+</button>
+      <button class="cb zero" onclick="calcInput('0')">0</button>
+      <button class="cb" onclick="calcInput('.')">.</button>
+      <button class="cb eq" onclick="calcEqual()">=</button>
+    </div>
+  </div>
+  <div id="calc-fabric-tab" style="display:none;">
+    <div class="calc-fabric-wrap">
+      <div class="fabric-row2">
+        <div><label>Altura (cm)</label><input type="number" id="fab-altura" placeholder="ex: 70" oninput="calcFabric()"></div>
+        <div><label>Largura (cm)</label><input type="number" id="fab-largura" placeholder="ex: 40" oninput="calcFabric()"></div>
+      </div>
+      <div><label>Quantidade de peças</label><input type="number" id="fab-pecas" placeholder="ex: 10" oninput="calcFabric()"></div>
+      <div><label>Largura do tecido (cm)</label><input type="number" id="fab-largura-tecido" placeholder="ex: 140" value="140" oninput="calcFabric()"></div>
+      <div class="fabric-result">
+        <div class="fr-label">Tecido necessário</div>
+        <div class="fr-val" id="fab-metros">— m</div>
+        <div class="fr-sub" id="fab-sub">Preencha os campos acima</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -835,6 +1028,7 @@ function showPage(id) {
   if (id === 'catalogo') renderCatalogo();
   if (id === 'google') refreshGooglePage();
   if (id === 'orcamento') { orcDatasDefault(); recarregarOrcCatalogo(); }
+  if (id === 'agenda') renderKanban();
 }
 
 // ═══════════════════════════════
@@ -977,10 +1171,11 @@ function setMargem(v) {
 function calcPreco() {
   const c = getConfig();
   const ch = custoHora(c);
+  const minCorte = +gv('p_min_corte') || 0;
   const minBord = (+gv('p_min_bord') || 0) * (+gv('p_complexidade') || 1);
   const minCos = +gv('p_min_cos') || 0;
   const minAcab = +gv('p_min_acab') || 0;
-  const totalMin = minBord + minCos + minAcab;
+  const totalMin = minCorte + minBord + minCos + minAcab;
   const totalH = totalMin / 60;
   const mo = totalH * ch;
   const matCusto = mats.reduce((s, m) => s + (m.val * m.qtd), 0);
@@ -1006,7 +1201,7 @@ function calcPreco() {
   const rows = [
     { l: '👩‍🎨 Mão de obra', v: mo, hint: `${totalH.toFixed(2)}h × R$${ch.toFixed(2)}/h` },
     { l: '🧶 Materiais diretos', v: matCusto },
-    { l: '🪡 Linhas de bordar', v: linhas },
+    { l: '🪡 Linhas de bordar/costurar', v: linhas },
     { l: '📦 Embalagem', v: embal },
     { l: '🚚 Frete de materiais', v: frete },
     { l: '─ Custo unitário', v: custoUnit, sep: true },
@@ -1029,7 +1224,7 @@ function buildProd(calc) {
   return {
     id: editandoId || Date.now(), // preserva ID ao editar
     nome: gv('p_nome').trim(), cat: gv('p_cat'), emoji: gv('p_emoji'), desc: gv('p_desc'),
-    min_bord: gv('p_min_bord'), min_cos: gv('p_min_cos'), min_acab: gv('p_min_acab'),
+    min_corte: gv('p_min_corte'), min_bord: gv('p_min_bord'), min_cos: gv('p_min_cos'), min_acab: gv('p_min_acab'),
     complexidade: gv('p_complexidade'), linhas: gv('p_linhas'), linha_val: gv('p_linha_val'),
     embal: gv('p_embal'), etiqu: gv('p_etiqu'), tag: gv('p_tag'), embal2: gv('p_embal2'),
     frete: gv('p_frete'), mkt_taxa: gv('p_mkt_taxa'), desconto: gv('p_desconto'), unid: gv('p_unid'),
@@ -1046,7 +1241,7 @@ function limpar() {
   document.getElementById('calc-sub').textContent = 'Preencha os campos. O preço é calculado em tempo real.';
   document.getElementById('btn-salvar-label').textContent = '📊 Salvar no Google Sheets';
   ['p_nome','p_desc'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
-  ['p_min_bord','p_min_cos','p_min_acab','p_embal','p_etiqu','p_tag','p_embal2','p_frete','p_mkt_taxa','p_desconto'].forEach(id => { const el = document.getElementById(id); if(el) el.value='0'; });
+  ['p_min_corte','p_min_bord','p_min_cos','p_min_acab','p_embal','p_etiqu','p_tag','p_embal2','p_frete','p_mkt_taxa','p_desconto'].forEach(id => { const el = document.getElementById(id); if(el) el.value='0'; });
   document.getElementById('p_linhas').value = '1';
   document.getElementById('p_linha_val').value = '18';
   document.getElementById('p_unid').value = '1';
@@ -1145,6 +1340,7 @@ function editarProd(p) {
   // Fill fields
   const setV = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined && val !== null) el.value = val; };
   setV('p_nome', p.nome); setV('p_desc', p.desc); setV('p_cat', p.cat); setV('p_emoji', p.emoji);
+  setV('p_min_corte', p.min_corte || 0);
   setV('p_min_bord', p.min_bord); setV('p_min_cos', p.min_cos); setV('p_min_acab', p.min_acab);
   setV('p_complexidade', p.complexidade || '1');
   setV('p_linhas', p.linhas); setV('p_linha_val', p.linha_val);
@@ -1649,6 +1845,281 @@ function init() {
   if (hash && document.getElementById('page-' + hash)) {
     showPage(hash);
   }
+}
+
+// ═══════════════════════════════
+//  AGENDA DE ENCOMENDAS — Google Sheets
+// ═══════════════════════════════
+const AGENDA_KEY = 'chic_agenda_v1'; // fallback local
+let pedidos = [];
+let pedidoEditandoId = null;
+let draggingId = null;
+
+function agendaSaveLocal() { LS.set(AGENDA_KEY, pedidos); }
+
+async function agendaSyncSheets(pedido, isDelete = false) {
+  if (!sheetsUrl) return;
+  try {
+    await fetch(sheetsUrl, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ ...pedido, __tipo: 'agenda', __delete: isDelete })
+    });
+  } catch(e) { console.warn('Sheets sync error:', e); }
+}
+
+async function agendaCarregarSheets() {
+  if (!sheetsUrl) {
+    pedidos = LS.get(AGENDA_KEY, []);
+    return;
+  }
+  try {
+    const data = await new Promise((resolve) => {
+      const cbName = 'agcb_' + Date.now();
+      const url = sheetsUrl + '?tipo=agenda&callback=' + cbName;
+      const timeout = setTimeout(() => {
+        delete window[cbName];
+        fetch(sheetsUrl + '?tipo=agenda')
+          .then(r => r.json()).then(j => resolve(j.success ? j.pedidos : null))
+          .catch(() => resolve(null));
+      }, 4000);
+      window[cbName] = (d) => { clearTimeout(timeout); delete window[cbName]; resolve(d && d.success ? d.pedidos : null); };
+      const script = document.createElement('script');
+      script.src = url;
+      script.onerror = () => { clearTimeout(timeout); delete window[cbName];
+        fetch(sheetsUrl + '?tipo=agenda').then(r => r.json()).then(j => resolve(j.success ? j.pedidos : null)).catch(() => resolve(null));
+      };
+      document.head.appendChild(script);
+      setTimeout(() => { try { document.head.removeChild(script); } catch {} }, 5000);
+    });
+    if (data) {
+      pedidos = data;
+      agendaSaveLocal(); // cache local
+    } else {
+      pedidos = LS.get(AGENDA_KEY, []);
+    }
+  } catch(e) {
+    pedidos = LS.get(AGENDA_KEY, []);
+  }
+}
+
+function abrirModalPedido(id = null) {
+  pedidoEditandoId = id;
+  document.getElementById('modal-pedido-titulo').textContent = id ? 'Editar Pedido' : 'Novo Pedido';
+  if (id) {
+    const p = pedidos.find(p => p.id === id);
+    if (!p) return;
+    document.getElementById('ped-produto').value = p.produto || '';
+    document.getElementById('ped-cliente').value = p.cliente || '';
+    document.getElementById('ped-contato').value = p.contato || '';
+    document.getElementById('ped-entrega').value = p.entrega || '';
+    document.getElementById('ped-valor').value = p.valor || '';
+    document.getElementById('ped-pagamento').value = p.pagamento || '';
+    document.getElementById('ped-pago').checked = !!p.pago;
+    document.getElementById('ped-obs').value = p.obs || '';
+  } else {
+    ['ped-produto','ped-cliente','ped-contato','ped-entrega','ped-valor','ped-obs'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('ped-pagamento').value = '';
+    document.getElementById('ped-pago').checked = false;
+  }
+  document.getElementById('modal-pedido').style.display = 'flex';
+}
+
+function fecharModalPedido() {
+  document.getElementById('modal-pedido').style.display = 'none';
+  pedidoEditandoId = null;
+}
+
+async function salvarPedido() {
+  const produto = document.getElementById('ped-produto').value.trim();
+  const cliente = document.getElementById('ped-cliente').value.trim();
+  if (!produto) { toast('Preencha o nome do produto', false); return; }
+  if (!cliente) { toast('Preencha o nome do cliente', false); return; }
+  const dados = {
+    produto, cliente,
+    contato: document.getElementById('ped-contato').value.trim(),
+    entrega: document.getElementById('ped-entrega').value,
+    valor: document.getElementById('ped-valor').value,
+    pagamento: document.getElementById('ped-pagamento').value,
+    pago: document.getElementById('ped-pago').checked,
+    obs: document.getElementById('ped-obs').value.trim(),
+  };
+  if (pedidoEditandoId) {
+    const idx = pedidos.findIndex(p => p.id === pedidoEditandoId);
+    if (idx >= 0) { pedidos[idx] = { ...pedidos[idx], ...dados }; await agendaSyncSheets(pedidos[idx]); }
+    toast('Pedido atualizado!');
+  } else {
+    const novo = { id: Date.now(), status: 'novo', criado: new Date().toLocaleDateString('pt-BR'), ...dados };
+    pedidos.push(novo);
+    await agendaSyncSheets(novo);
+    toast(sheetsUrl ? 'Pedido salvo na Agenda e no Sheets! ✓' : 'Pedido salvo na Agenda!');
+  }
+  agendaSaveLocal();
+  fecharModalPedido();
+  renderKanban();
+}
+
+function salvarNaAgenda() {
+  const nome = gv('p_nome').trim();
+  if (!nome) { toast('Preencha o nome do produto primeiro', false); return; }
+  const calc = calcPreco();
+  document.getElementById('modal-pedido-titulo').textContent = 'Salvar na Agenda';
+  pedidoEditandoId = null;
+  document.getElementById('ped-produto').value = nome;
+  document.getElementById('ped-valor').value = calc.final.toFixed(2);
+  ['ped-cliente','ped-contato','ped-entrega','ped-obs'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ped-pagamento').value = '';
+  document.getElementById('ped-pago').checked = false;
+  document.getElementById('modal-pedido').style.display = 'flex';
+}
+
+async function excluirPedido(id) {
+  if (!confirm('Remover este pedido?')) return;
+  const p = pedidos.find(p => p.id === id);
+  pedidos = pedidos.filter(p => p.id !== id);
+  agendaSaveLocal();
+  if (p) await agendaSyncSheets(p, true);
+  renderKanban();
+  toast('Pedido removido');
+}
+
+async function moverPedido(id, novoStatus) {
+  const p = pedidos.find(p => p.id === id);
+  if (p) {
+    p.status = novoStatus;
+    agendaSaveLocal();
+    await agendaSyncSheets(p);
+    renderKanban();
+  }
+}
+
+function dragStart(event, id) {
+  draggingId = id;
+  event.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => { const c = document.querySelector(`[data-id="${id}"]`); if (c) c.classList.add('dragging'); }, 0);
+}
+function dragEnd(id) {
+  const c = document.querySelector(`[data-id="${id}"]`); if (c) c.classList.remove('dragging');
+  document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+}
+function dropCard(event, status) {
+  event.preventDefault();
+  if (draggingId) { moverPedido(draggingId, status); draggingId = null; }
+  document.querySelectorAll('.kanban-col').forEach(c => c.classList.remove('drag-over'));
+}
+
+function formatDataEntrega(dataStr) {
+  if (!dataStr) return null;
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const entrega = new Date(dataStr + 'T00:00:00');
+  const diff = Math.ceil((entrega - hoje) / 86400000);
+  if (diff < 0) return { texto: `⚠ Atrasado ${Math.abs(diff)}d`, urgente: true };
+  if (diff === 0) return { texto: '🔴 Hoje!', urgente: true };
+  if (diff === 1) return { texto: '🟠 Amanhã', urgente: true };
+  if (diff <= 3) return { texto: `🟡 Em ${diff} dias`, urgente: true };
+  return { texto: `📅 ${entrega.toLocaleDateString('pt-BR')}`, urgente: false };
+}
+
+async function renderKanban() {
+  showLoading(true, 'Carregando agenda...');
+  await agendaCarregarSheets();
+  showLoading(false);
+  const cols = ['novo','andamento','pronto','entregue'];
+  let urgentes = [];
+  cols.forEach(status => {
+    const lista = pedidos.filter(p => p.status === status);
+    document.getElementById('count-' + status).textContent = lista.length;
+    document.getElementById('cards-' + status).innerHTML = lista.length === 0
+      ? `<div style="text-align:center;padding:20px 10px;color:var(--text-muted);font-size:0.78rem;">Nenhum pedido</div>`
+      : lista.map(p => {
+          const ei = formatDataEntrega(p.entrega);
+          if (ei && ei.urgente && status !== 'entregue') urgentes.push(p);
+          return `<div class="kanban-card" draggable="true" data-id="${p.id}"
+            ondragstart="dragStart(event,${p.id})" ondragend="dragEnd(${p.id})">
+            <div class="kcard-produto">${p.produto}</div>
+            <div class="kcard-cliente">👤 ${p.cliente}</div>
+            <div class="kcard-meta">
+              ${ei ? `<span class="kcard-tag entrega ${ei.urgente?'urgente':''}">${ei.texto}</span>` : ''}
+              ${p.valor ? `<span class="kcard-tag valor">R$ ${parseFloat(p.valor).toFixed(2)}</span>` : ''}
+              <span class="kcard-tag ${p.pago?'pago':'nao-pago'}">${p.pago?'✓ Pago':'⏳ Pendente'}</span>
+            </div>
+            ${p.contato ? `<div class="kcard-contato">📞 ${p.contato}</div>` : ''}
+            ${p.obs ? `<div style="font-size:0.73rem;color:var(--text-muted);margin-top:6px;font-style:italic;">${p.obs.slice(0,60)}${p.obs.length>60?'...':''}</div>` : ''}
+            <div class="kcard-actions">
+              <button class="btn btn-ghost btn-sm" onclick="abrirModalPedido(${p.id})" style="font-size:0.72rem;padding:5px 10px;">✏ Editar</button>
+              <select onchange="moverPedido(${p.id},this.value)" style="font-size:0.72rem;padding:4px 8px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text-dim);cursor:pointer;">
+                <option value="${status}">Mover →</option>
+                ${status!=='novo'?'<option value="novo">🆕 Novo</option>':''}
+                ${status!=='andamento'?'<option value="andamento">✂️ Andamento</option>':''}
+                ${status!=='pronto'?'<option value="pronto">✅ Pronto</option>':''}
+                ${status!=='entregue'?'<option value="entregue">🎁 Entregue</option>':''}
+              </select>
+              <button class="btn btn-danger btn-sm" onclick="excluirPedido(${p.id})" style="font-size:0.72rem;padding:5px 8px;">🗑</button>
+            </div>
+          </div>`;
+        }).join('');
+  });
+  const alertEl = document.getElementById('agenda-alertas');
+  const uniq = [...new Map(urgentes.map(p => [p.id, p])).values()];
+  alertEl.innerHTML = uniq.length
+    ? `<div class="agenda-alert-bar">⚠️ <strong>${uniq.length} entrega${uniq.length>1?'s':''} próxima${uniq.length>1?'s':''}:</strong> ${uniq.map(p=>`<em>${p.cliente}</em>`).join(', ')}</div>`
+    : '';
+}
+
+
+// ═══════════════════════════════
+//  CALCULADORA FLUTUANTE
+// ═══════════════════════════════
+function toggleCalc() { document.getElementById('calc-panel').classList.toggle('open'); }
+document.addEventListener('click', e => {
+  const panel = document.getElementById('calc-panel');
+  const fab = document.getElementById('calc-fab');
+  if (panel && panel.classList.contains('open') && !panel.contains(e.target) && !fab.contains(e.target))
+    panel.classList.remove('open');
+});
+
+function switchCalcTab(tab, btn) {
+  document.getElementById('calc-simple').style.display = tab==='simple'?'block':'none';
+  document.getElementById('calc-fabric-tab').style.display = tab==='fabric'?'block':'none';
+  document.querySelectorAll('.calc-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+let calcExpr = '', calcJustEvaled = false;
+function calcInput(v) {
+  const ops = ['÷','×','-','+'];
+  if (calcJustEvaled && !ops.includes(v)) { calcExpr=''; calcJustEvaled=false; }
+  if (v==='±') { if(calcExpr) calcExpr=calcExpr.startsWith('-')?calcExpr.slice(1):'-'+calcExpr; document.getElementById('calc-display').textContent=calcExpr||'0'; return; }
+  if (v==='%') { try{calcExpr=String(parseFloat(calcExpr)/100);}catch(e){} document.getElementById('calc-display').textContent=calcExpr; return; }
+  if (ops.includes(v) && ops.includes(calcExpr.slice(-1))) calcExpr=calcExpr.slice(0,-1);
+  calcExpr+=v;
+  document.getElementById('calc-display').textContent=calcExpr;
+  document.getElementById('calc-expr').textContent='';
+  calcJustEvaled=false;
+}
+function calcEqual() {
+  try {
+    const r = Function('"use strict";return('+calcExpr.replace(/÷/g,'/').replace(/×/g,'*')+')')();
+    document.getElementById('calc-expr').textContent=calcExpr+' =';
+    const rounded=parseFloat(r.toFixed(10));
+    document.getElementById('calc-display').textContent=rounded;
+    calcExpr=String(rounded); calcJustEvaled=true;
+  } catch(e) { document.getElementById('calc-display').textContent='Erro'; calcExpr=''; }
+}
+function calcClear() { calcExpr=''; document.getElementById('calc-display').textContent='0'; document.getElementById('calc-expr').textContent=''; calcJustEvaled=false; }
+
+function calcFabric() {
+  const alt=parseFloat(document.getElementById('fab-altura').value);
+  const larg=parseFloat(document.getElementById('fab-largura').value);
+  const pecas=parseFloat(document.getElementById('fab-pecas').value);
+  const largT=parseFloat(document.getElementById('fab-largura-tecido').value)||140;
+  if (!alt||!larg||!pecas) { document.getElementById('fab-metros').textContent='— m'; document.getElementById('fab-sub').textContent='Preencha os campos acima'; return; }
+  const porFileira=Math.floor(largT/larg);
+  const fileiras=Math.ceil(pecas/(porFileira||1));
+  const totalM=(fileiras*alt/100).toFixed(2);
+  const totalM2=((alt*larg*pecas)/10000).toFixed(2);
+  document.getElementById('fab-metros').textContent=totalM+' m';
+  document.getElementById('fab-sub').textContent=`${pecas} peças · ${porFileira} por fileira · ${totalM2} m² total`;
 }
 
 init();
