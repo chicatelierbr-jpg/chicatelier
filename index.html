@@ -180,6 +180,42 @@ input::placeholder { color: var(--text-muted); }
   .orc-no-print { display: none !important; }
 }
 
+/* ═══════════════════ FINANCEIRO ═══════════════════ */
+.fin-tabs { display:flex; gap:4px; margin-bottom:24px; background:var(--surface2); border-radius:12px; padding:4px; }
+.fin-tab { flex:1; padding:9px 14px; font-size:0.82rem; font-weight:600; cursor:pointer; border:none; background:transparent; border-radius:9px; color:var(--text-dim); font-family:'DM Sans',sans-serif; transition:all 0.18s; }
+.fin-tab.active { background:var(--surface); color:var(--rose); border:1px solid var(--border); box-shadow:0 1px 4px var(--shadow); }
+.fin-section { display:none; }
+.fin-section.active { display:block; }
+.fin-stat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; margin-bottom:24px; }
+.fin-stat { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:18px 16px; text-align:center; }
+.fin-stat .fval { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:var(--rose); line-height:1; }
+.fin-stat .fval.green { color:var(--success); }
+.fin-stat .fval.gold { color:var(--gold); }
+.fin-stat .fval.dim { color:var(--text-dim); }
+.fin-stat .flbl { font-size:0.67rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.07em; margin-top:6px; }
+.fin-bar-wrap { margin-bottom:6px; }
+.fin-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.fin-bar-mes { font-size:0.75rem; color:var(--text-muted); width:40px; text-align:right; flex-shrink:0; }
+.fin-bar-track { flex:1; height:26px; background:var(--surface2); border-radius:6px; overflow:hidden; position:relative; }
+.fin-bar-fill { height:100%; background:var(--surface3); border-radius:6px; transition:width 0.4s ease; }
+.fin-bar-fill.pago { background:var(--success); position:absolute; top:0; left:0; height:100%; opacity:0.85; }
+.fin-bar-val { font-size:0.75rem; color:var(--text-muted); min-width:80px; text-align:right; }
+.fin-venda-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+.fin-venda-row:last-child { border-bottom:none; }
+.fin-venda-info { flex:1; min-width:0; }
+.fin-venda-nome { font-size:0.88rem; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.fin-venda-meta { font-size:0.73rem; color:var(--text-muted); margin-top:2px; }
+.fin-venda-val { font-size:0.95rem; font-weight:700; color:var(--rose-deep); white-space:nowrap; }
+.fin-pago-badge { padding:4px 12px; border-radius:20px; font-size:0.73rem; font-weight:700; cursor:pointer; border:none; font-family:'DM Sans',sans-serif; transition:all 0.15s; white-space:nowrap; }
+.fin-pago-badge.pago { background:rgba(90,158,116,0.15); color:var(--success); }
+.fin-pago-badge.pendente { background:rgba(196,147,74,0.15); color:var(--gold); }
+.fin-pago-badge:hover { filter:brightness(0.9); transform:scale(0.97); }
+.agenda-fin-btn { background:var(--gold-dim); border:1px solid rgba(196,147,74,0.3); color:var(--gold); padding:8px 16px; border-radius:10px; font-size:0.82rem; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
+.agenda-fin-btn:hover { background:var(--gold); color:white; }
+.btn-pago-rapido { padding:4px 10px; border-radius:20px; font-size:0.7rem; font-weight:700; cursor:pointer; border:none; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
+.btn-pago-rapido.pago { background:rgba(90,158,116,0.15); color:var(--success); }
+.btn-pago-rapido.nao-pago { background:rgba(196,147,74,0.12); color:#8B6420; }
+.btn-pago-rapido:hover { filter:brightness(0.88); }
 /* ═══════════════════ ORÇAMENTO ═══════════════════ */
 .orc-dados-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .orc-catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 8px; }
@@ -637,6 +673,7 @@ input::placeholder { color: var(--text-muted); }
     <!-- Botões de ação -->
     <div class="orc-no-print" style="display:flex; gap:10px; margin-top:24px; flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="abrirPdfOrcamento()">📄 Gerar PDF / Imprimir</button>
+      <button class="btn btn-primary" onclick="salvarOrcamentoNaAgenda()">📅 Salvar na Agenda</button>
       <button class="btn btn-ghost" onclick="limparOrcamento()">🗑 Limpar Orçamento</button>
     </div>
   </div>
@@ -737,46 +774,16 @@ input::placeholder { color: var(--text-muted); }
     </div>
     <p style="font-size:0.85rem; color:var(--text-dim); line-height:1.6; margin-bottom:12px;">Na planilha, vá em <strong>Extensões → Apps Script</strong>. Apague o código existente, cole o código abaixo, salve (Ctrl+S) e clique em <strong>Implantar → Nova implantação → App da Web → Qualquer pessoa → Implantar</strong>.</p>
     <div style="background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:16px; font-family:monospace; font-size:0.78rem; color:var(--text-dim); overflow-x:auto; white-space:pre; margin-bottom:14px; max-height:300px; overflow-y:auto; line-height:1.6;" id="script-code">const SHEET_NAME = 'Produtos';
+const AGENDA_SHEET = 'Agenda';
 
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName(SHEET_NAME);
-    if (!sheet) {
-      sheet = ss.insertSheet(SHEET_NAME);
-      sheet.appendRow(['ID','Data','Nome','Categoria','Emoji','Descrição',
-        'Min Bordado','Min Costura','Min Acabamento','Linhas','Custo Linha',
-        'Custo Materiais','Embalagem','Frete','Taxa Mkt','Desconto%','Unidades',
-        'Custo Unit','Margem%','Preço Final']);
-      sheet.getRange(1,1,1,20).setFontWeight('bold')
-        .setBackground('#B5614A').setFontColor('white');
+    if (data.__tipo === 'agenda') {
+      return handleAgendaPost(ss, data);
     }
-    const lastRow = sheet.getLastRow();
-    if (lastRow > 1) {
-      const ids = sheet.getRange(2,1,lastRow-1,1).getValues();
-      for (let i = ids.length-1; i >= 0; i--) {
-        if (String(ids[i][0]) === String(data.id)) {
-          sheet.deleteRow(i+2); break;
-        }
-      }
-    }
-    // If __delete flag, removal already done above — just return success
-    if (data.__delete) {
-      return ContentService
-        .createTextOutput(JSON.stringify({success: true}))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    sheet.appendRow([
-      data.id, data.data, data.nome, data.cat, data.emoji, data.desc,
-      data.min_bord, data.min_cos, data.min_acab,
-      data.linhas, data.linha_val, data.matCusto, data.embalagem,
-      data.frete, data.mkt_taxa, data.desconto, data.unid,
-      data.custo, data.margem, data.preco
-    ]);
-    return ContentService
-      .createTextOutput(JSON.stringify({success: true}))
-      .setMimeType(ContentService.MimeType.JSON);
+    return handleProdutosPost(ss, data);
   } catch(err) {
     return ContentService
       .createTextOutput(JSON.stringify({success: false, error: err.toString()}))
@@ -784,14 +791,103 @@ function doPost(e) {
   }
 }
 
+function handleProdutosPost(ss, data) {
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    sheet.appendRow(['ID','Data','Nome','Categoria','Emoji','Descrição',
+      'Min Bordado','Min Costura','Min Acabamento','Linhas','Custo Linha',
+      'Custo Materiais','Embalagem','Frete','Taxa Mkt','Desconto%','Unidades',
+      'Custo Unit','Margem%','Preço Final']);
+    sheet.getRange(1,1,1,20).setFontWeight('bold')
+      .setBackground('#B5614A').setFontColor('white');
+  }
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    const ids = sheet.getRange(2,1,lastRow-1,1).getValues();
+    for (let i = ids.length-1; i >= 0; i--) {
+      if (String(ids[i][0]) === String(data.id)) {
+        sheet.deleteRow(i+2); break;
+      }
+    }
+  }
+  if (data.__delete) {
+    return ContentService.createTextOutput(JSON.stringify({success:true}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  sheet.appendRow([
+    data.id, data.data, data.nome, data.cat, data.emoji, data.desc,
+    data.min_bord, data.min_cos, data.min_acab,
+    data.linhas, data.linha_val, data.matCusto, data.embalagem,
+    data.frete, data.mkt_taxa, data.desconto, data.unid,
+    data.custo, data.margem, data.preco
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({success:true}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleAgendaPost(ss, data) {
+  let sheet = ss.getSheetByName(AGENDA_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(AGENDA_SHEET);
+    sheet.appendRow(['ID','Produto','Cliente','Contato','Entrega',
+      'Valor','Pagamento','Pago','Status','Obs','Criado']);
+    sheet.getRange(1,1,1,11).setFontWeight('bold')
+      .setBackground('#6B9E8A').setFontColor('white');
+  }
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    const ids = sheet.getRange(2,1,lastRow-1,1).getValues();
+    for (let i = ids.length-1; i >= 0; i--) {
+      if (String(ids[i][0]) === String(data.id)) {
+        sheet.deleteRow(i+2); break;
+      }
+    }
+  }
+  if (data.__delete) {
+    return ContentService.createTextOutput(JSON.stringify({success:true}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  sheet.appendRow([
+    data.id, data.produto, data.cliente, data.contato||'',
+    data.entrega||'', data.valor||'', data.pagamento||'',
+    data.pago ? 'Sim' : 'Não', data.status||'novo',
+    data.obs||'', data.criado||''
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({success:true}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function doGet(e) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const tipo = e && e.parameter && e.parameter.tipo;
+    const callback = e && e.parameter && e.parameter.callback;
+
+    if (tipo === 'agenda') {
+      const sheet = ss.getSheetByName(AGENDA_SHEET);
+      let pedidos = [];
+      if (sheet && sheet.getLastRow() > 1) {
+        const rows = sheet.getRange(2,1,sheet.getLastRow()-1,11).getValues();
+        pedidos = rows.filter(r=>r[0]).map(r=>({
+          id: r[0], produto: r[1], cliente: r[2], contato: r[3],
+          entrega: r[4], valor: r[5], pagamento: r[6],
+          pago: r[7]==='Sim', status: r[8]||'novo',
+          obs: r[9], criado: r[10]
+        }));
+      }
+      const result = JSON.stringify({success:true, pedidos});
+      if (callback) return ContentService.createTextOutput(callback+'('+result+')')
+        .setMimeType(ContentService.MimeType.JAVASCRIPT);
+      return ContentService.createTextOutput(result)
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     const sheet = ss.getSheetByName(SHEET_NAME);
     let produtos = [];
     if (sheet && sheet.getLastRow() > 1) {
-      const rows = sheet.getRange(2, 1, sheet.getLastRow()-1, 20).getValues();
-      produtos = rows.filter(r => r[0]).map(r => ({
+      const rows = sheet.getRange(2,1,sheet.getLastRow()-1,20).getValues();
+      produtos = rows.filter(r=>r[0]).map(r=>({
         id: r[0], data: r[1], nome: r[2], cat: r[3], emoji: r[4], desc: r[5],
         min_bord: r[6], min_cos: r[7], min_acab: r[8],
         linhas: r[9], linha_val: r[10], matCusto: r[11], embalagem: r[12],
@@ -799,20 +895,13 @@ function doGet(e) {
         custo: r[17], margem: r[18], preco: r[19]
       }));
     }
-    const result = JSON.stringify({success: true, produtos: produtos});
-    // Support JSONP for cross-origin requests
-    const callback = e && e.parameter && e.parameter.callback;
-    if (callback) {
-      return ContentService
-        .createTextOutput(callback + '(' + result + ')')
-        .setMimeType(ContentService.MimeType.JAVASCRIPT);
-    }
-    return ContentService
-      .createTextOutput(result)
+    const result = JSON.stringify({success:true, produtos});
+    if (callback) return ContentService.createTextOutput(callback+'('+result+')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    return ContentService.createTextOutput(result)
       .setMimeType(ContentService.MimeType.JSON);
   } catch(err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({success: false, error: err.toString()}))
+    return ContentService.createTextOutput(JSON.stringify({success:false, error:err.toString()}))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }</div>
@@ -852,39 +941,89 @@ function doGet(e) {
 <div class="page" id="page-agenda">
   <div class="section-eyebrow">Gestão de Pedidos</div>
   <div class="section-title">Agenda de Encomendas</div>
-  <div class="section-sub">Acompanhe seus pedidos do orçamento à entrega. Arraste os cards entre as colunas para atualizar o status.</div>
-  <div id="agenda-alertas"></div>
-  <div style="display:flex; justify-content:flex-end; margin-bottom:24px;">
-    <button class="btn btn-primary" onclick="abrirModalPedido()">+ Novo Pedido</button>
+  <div class="section-sub">Acompanhe seus pedidos do orçamento à entrega. Clique em <strong>Financeiro</strong> para ver o caixa do atelier.</div>
+
+  <!-- Sub-abas: Kanban | Financeiro -->
+  <div class="fin-tabs" style="max-width:420px; margin-bottom:20px;">
+    <button class="fin-tab active" id="fin-tab-kanban" onclick="switchAgendaTab('kanban')">📅 Pedidos</button>
+    <button class="fin-tab" id="fin-tab-financeiro" onclick="switchAgendaTab('financeiro')">💰 Financeiro</button>
   </div>
-  <div class="kanban-wrap">
-    <div class="kanban-col" id="col-novo" ondragover="event.preventDefault()" ondrop="dropCard(event,'novo')">
-      <div class="kanban-col-header" style="--col-color:#C4934A;">
-        <span class="kanban-col-icon">🆕</span><span class="kanban-col-title">Novo Pedido</span>
-        <span class="kanban-col-count" id="count-novo">0</span>
-      </div>
-      <div class="kanban-cards" id="cards-novo"></div>
+
+  <!-- ABA KANBAN -->
+  <div class="fin-section active" id="agenda-sec-kanban">
+    <div id="agenda-alertas"></div>
+    <div style="display:flex; justify-content:flex-end; margin-bottom:24px;">
+      <button class="btn btn-primary" onclick="abrirModalPedido()">+ Novo Pedido</button>
     </div>
-    <div class="kanban-col" id="col-andamento" ondragover="event.preventDefault()" ondrop="dropCard(event,'andamento')">
-      <div class="kanban-col-header" style="--col-color:#6B9E8A;">
-        <span class="kanban-col-icon">✂️</span><span class="kanban-col-title">Em Andamento</span>
-        <span class="kanban-col-count" id="count-andamento">0</span>
+    <div class="kanban-wrap">
+      <div class="kanban-col" id="col-novo" ondragover="event.preventDefault()" ondrop="dropCard(event,'novo')">
+        <div class="kanban-col-header" style="--col-color:#C4934A;">
+          <span class="kanban-col-icon">🆕</span><span class="kanban-col-title">Novo Pedido</span>
+          <span class="kanban-col-count" id="count-novo">0</span>
+        </div>
+        <div class="kanban-cards" id="cards-novo"></div>
       </div>
-      <div class="kanban-cards" id="cards-andamento"></div>
+      <div class="kanban-col" id="col-andamento" ondragover="event.preventDefault()" ondrop="dropCard(event,'andamento')">
+        <div class="kanban-col-header" style="--col-color:#6B9E8A;">
+          <span class="kanban-col-icon">✂️</span><span class="kanban-col-title">Em Andamento</span>
+          <span class="kanban-col-count" id="count-andamento">0</span>
+        </div>
+        <div class="kanban-cards" id="cards-andamento"></div>
+      </div>
+      <div class="kanban-col" id="col-pronto" ondragover="event.preventDefault()" ondrop="dropCard(event,'pronto')">
+        <div class="kanban-col-header" style="--col-color:#4285F4;">
+          <span class="kanban-col-icon">✅</span><span class="kanban-col-title">Pronto</span>
+          <span class="kanban-col-count" id="count-pronto">0</span>
+        </div>
+        <div class="kanban-cards" id="cards-pronto"></div>
+      </div>
+      <div class="kanban-col" id="col-entregue" ondragover="event.preventDefault()" ondrop="dropCard(event,'entregue')">
+        <div class="kanban-col-header" style="--col-color:#5A9E74;">
+          <span class="kanban-col-icon">🎁</span><span class="kanban-col-title">Entregue</span>
+          <span class="kanban-col-count" id="count-entregue">0</span>
+        </div>
+        <div class="kanban-cards" id="cards-entregue"></div>
+      </div>
     </div>
-    <div class="kanban-col" id="col-pronto" ondragover="event.preventDefault()" ondrop="dropCard(event,'pronto')">
-      <div class="kanban-col-header" style="--col-color:#4285F4;">
-        <span class="kanban-col-icon">✅</span><span class="kanban-col-title">Pronto</span>
-        <span class="kanban-col-count" id="count-pronto">0</span>
+  </div>
+
+  <!-- ABA FINANCEIRO -->
+  <div class="fin-section" id="agenda-sec-financeiro">
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--gold-dim); border-color:rgba(196,147,74,0.3);">💰</div>
+        <h3>Resumo Financeiro</h3>
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="renderFinanceiro()">🔄 Atualizar</button>
       </div>
-      <div class="kanban-cards" id="cards-pronto"></div>
+      <div class="fin-stat-grid" id="fin-stats"></div>
+      <div>
+        <div style="font-size:0.72rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px;">Faturamento por mês</div>
+        <div id="fin-chart"></div>
+      </div>
     </div>
-    <div class="kanban-col" id="col-entregue" ondragover="event.preventDefault()" ondrop="dropCard(event,'entregue')">
-      <div class="kanban-col-header" style="--col-color:#5A9E74;">
-        <span class="kanban-col-icon">🎁</span><span class="kanban-col-title">Entregue</span>
-        <span class="kanban-col-count" id="count-entregue">0</span>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:var(--rose-dim);">🧾</div>
+        <h3>Todos os Pedidos</h3>
+        <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
+          <select id="fin-filtro-status" onchange="renderFinanceiro()" style="font-size:0.78rem; padding:6px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); cursor:pointer;">
+            <option value="todos">Todos</option>
+            <option value="pendente">Pendentes</option>
+            <option value="pago">Pagos</option>
+          </select>
+          <select id="fin-filtro-mes" onchange="renderFinanceiro()" style="font-size:0.78rem; padding:6px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); color:var(--text); cursor:pointer;">
+            <option value="todos">Todos os meses</option>
+          </select>
+        </div>
       </div>
-      <div class="kanban-cards" id="cards-entregue"></div>
+      <div id="fin-lista-vendas">
+        <div class="empty" style="padding:32px 20px;">
+          <span class="empty-icon">📋</span>
+          <h3>Nenhum pedido ainda</h3>
+          <p>Crie pedidos na aba Pedidos ou salve orçamentos na agenda.</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1959,6 +2098,35 @@ async function salvarPedido() {
   renderKanban();
 }
 
+function salvarOrcamentoNaAgenda() {
+  const cliente = document.getElementById('orc_cliente')?.value.trim();
+  if (!orcItens.length) { toast('Adicione ao menos um produto ao orçamento.', false); return; }
+  if (!cliente) { toast('Informe o nome do cliente no orçamento antes de salvar.', false); return; }
+
+  const num = document.getElementById('orc_num')?.value || '';
+  const obs = document.getElementById('orc_obs')?.value.trim() || '';
+  const descPct = parseFloat(document.getElementById('orc_desconto')?.value || 0);
+  const frete = parseFloat(document.getElementById('orc_frete')?.value || 0);
+  const subtotal = orcItens.reduce((s, i) => s + parseFloat(i.produto.preco || 0) * i.qty, 0);
+  const descVal = subtotal * descPct / 100;
+  const total = subtotal - descVal + frete;
+
+  const produtos = orcItens.map(i => `${i.qty}x ${i.produto.nome}`).join(', ');
+  const descPedido = (num ? `[${num}] ` : '') + produtos;
+
+  pedidoEditandoId = null;
+  document.getElementById('modal-pedido-titulo').textContent = 'Salvar Orçamento na Agenda';
+  document.getElementById('ped-produto').value = descPedido;
+  document.getElementById('ped-cliente').value = cliente;
+  document.getElementById('ped-valor').value = total.toFixed(2);
+  document.getElementById('ped-obs').value = obs;
+  document.getElementById('ped-contato').value = '';
+  document.getElementById('ped-entrega').value = '';
+  document.getElementById('ped-pagamento').value = '';
+  document.getElementById('ped-pago').checked = false;
+  document.getElementById('modal-pedido').style.display = 'flex';
+}
+
 function salvarNaAgenda() {
   const nome = gv('p_nome').trim();
   if (!nome) { toast('Preencha o nome do produto primeiro', false); return; }
@@ -2041,7 +2209,7 @@ async function renderKanban() {
             <div class="kcard-meta">
               ${ei ? `<span class="kcard-tag entrega ${ei.urgente?'urgente':''}">${ei.texto}</span>` : ''}
               ${p.valor ? `<span class="kcard-tag valor">R$ ${parseFloat(p.valor).toFixed(2)}</span>` : ''}
-              <span class="kcard-tag ${p.pago?'pago':'nao-pago'}">${p.pago?'✓ Pago':'⏳ Pendente'}</span>
+              <button class="btn-pago-rapido ${p.pago?'pago':'nao-pago'}" onclick="togglePagoRapido(${p.id})" title="${p.pago?'Clique para marcar como pendente':'Clique para marcar como pago'}">${p.pago?'✓ Pago':'⏳ Pendente'}</button>
             </div>
             ${p.contato ? `<div class="kcard-contato">📞 ${p.contato}</div>` : ''}
             ${p.obs ? `<div style="font-size:0.73rem;color:var(--text-muted);margin-top:6px;font-style:italic;">${p.obs.slice(0,60)}${p.obs.length>60?'...':''}</div>` : ''}
@@ -2120,6 +2288,141 @@ function calcFabric() {
   const totalM2=((alt*larg*pecas)/10000).toFixed(2);
   document.getElementById('fab-metros').textContent=totalM+' m';
   document.getElementById('fab-sub').textContent=`${pecas} peças · ${porFileira} por fileira · ${totalM2} m² total`;
+}
+
+// ═══════════════════════════════
+//  ABA FINANCEIRO
+// ═══════════════════════════════
+function switchAgendaTab(tab) {
+  document.getElementById('fin-tab-kanban').classList.toggle('active', tab==='kanban');
+  document.getElementById('fin-tab-financeiro').classList.toggle('active', tab==='financeiro');
+  document.getElementById('agenda-sec-kanban').classList.toggle('active', tab==='kanban');
+  document.getElementById('agenda-sec-financeiro').classList.toggle('active', tab==='financeiro');
+  if (tab === 'financeiro') renderFinanceiro();
+}
+
+async function togglePagoRapido(id) {
+  const p = pedidos.find(p => p.id === id);
+  if (!p) return;
+  p.pago = !p.pago;
+  agendaSaveLocal();
+  await agendaSyncSheets(p);
+  renderKanban();
+  toast(p.pago ? '✓ Pagamento registrado!' : 'Marcado como pendente');
+}
+
+function fmtBRL(n) {
+  return 'R$ ' + parseFloat(n||0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function getMesKey(p) {
+  if (!p.entrega && !p.criado) return null;
+  const raw = p.entrega || '';
+  // entrega: 'YYYY-MM-DD'
+  if (raw && /^\d{4}-\d{2}/.test(raw)) return raw.substring(0,7);
+  // criado: 'DD/MM/YYYY'
+  if (p.criado && /\d{2}\/\d{2}\/\d{4}/.test(p.criado)) {
+    const [d,m,y] = p.criado.split('/');
+    return `${y}-${m}`;
+  }
+  return null;
+}
+
+function renderFinanceiro() {
+  const comValor = pedidos.filter(p => parseFloat(p.valor||0) > 0);
+  const total = comValor.reduce((s,p)=>s+parseFloat(p.valor||0),0);
+  const pago = comValor.filter(p=>p.pago).reduce((s,p)=>s+parseFloat(p.valor||0),0);
+  const pendente = comValor.filter(p=>!p.pago).reduce((s,p)=>s+parseFloat(p.valor||0),0);
+  const qtdPago = comValor.filter(p=>p.pago).length;
+
+  document.getElementById('fin-stats').innerHTML = `
+    <div class="fin-stat"><div class="fval">${fmtBRL(total)}</div><div class="flbl">Total em pedidos</div></div>
+    <div class="fin-stat"><div class="fval green">${fmtBRL(pago)}</div><div class="flbl">Recebido (${qtdPago} pago${qtdPago!==1?'s':''})</div></div>
+    <div class="fin-stat"><div class="fval gold">${fmtBRL(pendente)}</div><div class="flbl">A receber</div></div>
+    <div class="fin-stat"><div class="fval dim">${comValor.length}</div><div class="flbl">Pedidos com valor</div></div>
+  `;
+
+  // Gráfico de barras por mês
+  const meses = {};
+  comValor.forEach(p => {
+    const key = getMesKey(p);
+    if (!key) return;
+    if (!meses[key]) meses[key] = { total:0, pago:0 };
+    meses[key].total += parseFloat(p.valor||0);
+    if (p.pago) meses[key].pago += parseFloat(p.valor||0);
+  });
+  const keys = Object.keys(meses).sort().slice(-6);
+  const maxVal = Math.max(...keys.map(k=>meses[k].total), 1);
+  document.getElementById('fin-chart').innerHTML = keys.length === 0
+    ? '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.83rem;">Nenhum dado com data para exibir</div>'
+    : keys.map(k => {
+        const m = meses[k];
+        const pct = Math.round(m.total/maxVal*100);
+        const pctP = Math.round(m.pago/maxVal*100);
+        const [y,mo] = k.split('-');
+        const nomeMes = new Date(+y,+mo-1,1).toLocaleDateString('pt-BR',{month:'short'});
+        return `<div class="fin-bar-row">
+          <div class="fin-bar-mes">${nomeMes}</div>
+          <div class="fin-bar-track">
+            <div class="fin-bar-fill" style="width:${pct}%"></div>
+            <div class="fin-bar-fill pago" style="width:${pctP}%"></div>
+          </div>
+          <div class="fin-bar-val">${fmtBRL(m.total)}</div>
+        </div>`;
+      }).join('');
+
+  // Popular filtro de meses
+  const filtroMes = document.getElementById('fin-filtro-mes');
+  const mesAtual = filtroMes.value;
+  const todosMeses = [...new Set(comValor.map(p=>getMesKey(p)).filter(Boolean))].sort().reverse();
+  filtroMes.innerHTML = '<option value="todos">Todos os meses</option>' +
+    todosMeses.map(k => {
+      const [y,mo] = k.split('-');
+      const nome = new Date(+y,+mo-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+      return `<option value="${k}" ${mesAtual===k?'selected':''}>${nome}</option>`;
+    }).join('');
+
+  // Lista de pedidos filtrada
+  const filtroStatus = document.getElementById('fin-filtro-status').value;
+  const filtroMesVal = document.getElementById('fin-filtro-mes').value;
+  let lista = comValor.slice().sort((a,b) => {
+    const ka = getMesKey(a)||''; const kb = getMesKey(b)||'';
+    return kb.localeCompare(ka);
+  });
+  if (filtroStatus === 'pago') lista = lista.filter(p=>p.pago);
+  if (filtroStatus === 'pendente') lista = lista.filter(p=>!p.pago);
+  if (filtroMesVal !== 'todos') lista = lista.filter(p=>getMesKey(p)===filtroMesVal);
+
+  const listaEl = document.getElementById('fin-lista-vendas');
+  if (!lista.length) {
+    listaEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-muted);font-size:0.83rem;">Nenhum pedido com os filtros selecionados</div>';
+    return;
+  }
+  listaEl.innerHTML = lista.map(p => {
+    const mesKey = getMesKey(p);
+    const dataFmt = p.entrega
+      ? new Date(p.entrega+'T12:00').toLocaleDateString('pt-BR')
+      : (p.criado || '—');
+    return `<div class="fin-venda-row">
+      <div style="font-size:1.4rem; width:30px; text-align:center; flex-shrink:0;">🧵</div>
+      <div class="fin-venda-info">
+        <div class="fin-venda-nome">${p.produto}</div>
+        <div class="fin-venda-meta">👤 ${p.cliente} · 📅 ${dataFmt}${p.pagamento?' · '+p.pagamento:''}</div>
+      </div>
+      <div class="fin-venda-val">${fmtBRL(p.valor)}</div>
+      <button class="fin-pago-badge ${p.pago?'pago':'pendente'}" onclick="togglePagoFinanceiro(${p.id})">${p.pago?'✓ Pago':'⏳ Pendente'}</button>
+    </div>`;
+  }).join('');
+}
+
+async function togglePagoFinanceiro(id) {
+  const p = pedidos.find(p => p.id === id);
+  if (!p) return;
+  p.pago = !p.pago;
+  agendaSaveLocal();
+  await agendaSyncSheets(p);
+  renderFinanceiro();
+  toast(p.pago ? '✓ Pagamento registrado!' : 'Marcado como pendente');
 }
 
 init();
